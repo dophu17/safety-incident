@@ -24,6 +24,14 @@ Route::middleware('setLocale')->group(function () {
         return back();
     })->name('locale.set');
 
+    // Language switch route for dropdown
+    Route::get('/language/{locale}', function ($locale) {
+        if (in_array($locale, ['ja', 'vn'])) {
+            session(['locale' => $locale]);
+        }
+        return redirect()->back();
+    })->name('language.switch');
+
     // Public feed
     Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
 

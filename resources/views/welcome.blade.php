@@ -32,23 +32,73 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Language Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-globe me-1"></i>
+                            @if(app()->getLocale() == 'ja')
+                                日本語
+                            @elseif(app()->getLocale() == 'vn')
+                                Tiếng Việt
+                            @else
+                                English
+                            @endif
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center {{ app()->getLocale() == 'vn' ? 'active' : '' }}" href="{{ route('language.switch', 'vn') }}">
+                                    <span class="me-2">🇻🇳</span>Tiếng Việt
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center {{ app()->getLocale() == 'ja' ? 'active' : '' }}" href="{{ route('language.switch', 'ja') }}">
+                                    <span class="me-2">🇯🇵</span>日本語
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
                     @if (Route::has('login'))
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('/dashboard') }}">
-                                    <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                @if(auth()->user()->role === 'manager')
+                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-speedometer2 me-1"></i>{{ __('messages.Dashboard') }}
+                                    </a>
+                                @else
+                                    <a class="nav-link" href="{{ route('incidents.index') }}">
+                                        <i class="bi bi-speedometer2 me-1"></i>{{ __('messages.Dashboard') }}
+                                    </a>
+                                @endif
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    {{ auth()->user()->name }}
                                 </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>{{ __('messages.Profile') }}</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="post" class="d-inline">
+                                            @csrf
+                                            <button class="dropdown-item" type="submit">
+                                                <i class="bi bi-box-arrow-right me-2"></i>{{ __('messages.Logout') }}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">
-                                    <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>{{ __('messages.Login') }}
                                 </a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="btn btn-primary" href="{{ route('register') }}">
-                                        <i class="bi bi-person-plus me-1"></i>Đăng ký
+                                        <i class="bi bi-person-plus me-1"></i>{{ __('messages.Register') }}
                                     </a>
                                 </li>
                             @endif
@@ -76,15 +126,15 @@
             @if (Route::has('login'))
                     @auth
                                 <a href="{{ url('/dashboard') }}" class="btn btn-warning btn-custom">
-                                    <i class="bi bi-speedometer2 me-2"></i>Truy cập Dashboard
+                                    <i class="bi bi-speedometer2 me-2"></i>{{ app()->getLocale() == 'ja' ? 'ダッシュボードにアクセス' : 'Truy cập Dashboard' }}
                         </a>
                     @else
                                 <a href="{{ route('login') }}" class="btn btn-warning btn-custom">
-                                    <i class="bi bi-play-circle me-2"></i>Bắt đầu ngay
+                                    <i class="bi bi-play-circle me-2"></i>{{ app()->getLocale() == 'ja' ? '今すぐ始める' : 'Bắt đầu ngay' }}
                                 </a>
                                 @if (Route::has('register'))
                                     <a href="{{ route('register') }}" class="btn btn-outline-light btn-custom">
-                                        <i class="bi bi-person-plus me-2"></i>Đăng ký miễn phí
+                                        <i class="bi bi-person-plus me-2"></i>{{ app()->getLocale() == 'ja' ? '無料登録' : 'Đăng ký miễn phí' }}
                                     </a>
                                 @endif
                             @endauth
@@ -243,15 +293,15 @@
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}" class="btn btn-light btn-custom">
-                                    <i class="bi bi-speedometer2 me-2"></i>Truy cập Dashboard
+                                    <i class="bi bi-speedometer2 me-2"></i>{{ app()->getLocale() == 'ja' ? 'ダッシュボードにアクセス' : 'Truy cập Dashboard' }}
                                 </a>
                             @else
                                 <a href="{{ route('login') }}" class="btn btn-light btn-custom">
-                                    <i class="bi bi-play-circle me-2"></i>Bắt đầu miễn phí
+                                    <i class="bi bi-play-circle me-2"></i>{{ app()->getLocale() == 'ja' ? '無料で始める' : 'Bắt đầu miễn phí' }}
                                 </a>
                         @if (Route::has('register'))
                                     <a href="{{ route('register') }}" class="btn btn-outline-light btn-custom">
-                                        <i class="bi bi-person-plus me-2"></i>Đăng ký ngay
+                                        <i class="bi bi-person-plus me-2"></i>{{ app()->getLocale() == 'ja' ? '今すぐ登録' : 'Đăng ký ngay' }}
                             </a>
                         @endif
                     @endauth

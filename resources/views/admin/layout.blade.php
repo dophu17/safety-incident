@@ -98,7 +98,7 @@
                             Thống kê chi tiết
                         </a>
                         <hr class="text-white-50">
-                        <a href="{{ route('incidents.index') }}" class="nav-link">
+                        <a href="{{ url('/') }}" class="nav-link">
                             <i class="fas fa-home me-2"></i>
                             Về trang chủ
                         </a>

@@ -23,7 +23,14 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('incidents.index'));
+            
+            // Redirect based on user role
+            $user = Auth::user();
+            if ($user->role === 'manager') {
+                return redirect()->intended(route('admin.dashboard'));
+            } else {
+                return redirect()->intended(route('incidents.index'));
+            }
         }
 
         return back()->withErrors(['email' => __('auth.failed')])->onlyInput('email');
@@ -50,6 +57,8 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+        
+        // New registered users are always employees, redirect to incidents
         return redirect()->route('incidents.index');
     }
 
@@ -58,7 +67,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('incidents.index');
+        return redirect('/');
     }
 }
 
