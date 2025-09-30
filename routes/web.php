@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 
 Route::middleware('setLocale')->group(function () {
     Route::get('/', function () {
@@ -43,6 +44,17 @@ Route::middleware('setLocale')->group(function () {
 
     // Admin area
     Route::middleware(['auth', 'role:manager'])->group(function () {
-        Route::get('/admin/incidents', [IncidentController::class, 'index'])->name('admin.incidents.index');
+        // Admin dashboard
+        Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        
+        // Admin incidents management
+        Route::get('/admin/incidents', [AdminController::class, 'incidents'])->name('admin.incidents.index');
+        Route::get('/admin/incidents/export', [AdminController::class, 'exportIncidents'])->name('admin.incidents.export');
+        
+        // Admin users management
+        Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users.index');
+        
+        // Admin statistics
+        Route::get('/admin/statistics', [AdminController::class, 'statistics'])->name('admin.statistics');
     });
 });

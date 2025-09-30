@@ -47,7 +47,7 @@
                         </li>
                         @if(auth()->user()->role === 'manager')
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.incidents.index') }}">
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}">
                                     <i class="bi bi-gear me-1"></i>{{ __('Admin') }}
                                 </a>
                             </li>
