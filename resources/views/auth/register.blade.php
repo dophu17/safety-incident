@@ -1,56 +1,81 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Register</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
+@extends('layouts.app')
+
+@section('title', __('Register') . ' - ' . config('app.name'))
+
+@section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h1 class="h4 mb-3">Register</h1>
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    <form method="post" action="{{ route('register.post') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required autofocus>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
-                        </div>
-                        <button class="btn btn-primary w-100" type="submit">Create account</button>
-                    </form>
-                    <div class="text-center mt-3">
-                        <a href="{{ route('login') }}">Back to login</a>
+        <div class="col-md-6 col-lg-5">
+            <div class="content-card">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus-fill text-primary" style="font-size: 3rem;"></i>
+                    <h1 class="h3 mb-2">{{ __('Create Account') }}</h1>
+                    <p class="text-muted">{{ __('Join SafetyAI to manage risks effectively') }}</p>
+                </div>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                @endif
+
+                <form method="post" action="{{ route('register.post') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-person me-1"></i>{{ __('Full Name') }}
+                        </label>
+                        <input type="text" name="name" class="form-control" 
+                               value="{{ old('name') }}" required autofocus
+                               placeholder="{{ __('Enter your full name') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-envelope me-1"></i>{{ __('Email Address') }}
+                        </label>
+                        <input type="email" name="email" class="form-control" 
+                               value="{{ old('email') }}" required
+                               placeholder="{{ __('Enter your email') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-lock me-1"></i>{{ __('Password') }}
+                        </label>
+                        <input type="password" name="password" class="form-control" required
+                               placeholder="{{ __('Create a password') }}">
+                        <div class="form-text">{{ __('Password must be at least 8 characters') }}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-lock-fill me-1"></i>{{ __('Confirm Password') }}
+                        </label>
+                        <input type="password" name="password_confirmation" class="form-control" required
+                               placeholder="{{ __('Confirm your password') }}">
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mb-3" type="submit">
+                        <i class="bi bi-person-plus me-2"></i>{{ __('Create Account') }}
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <p class="mb-0 text-muted">
+                        {{ __('Already have an account?') }}
+                        <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">
+                            {{ __('Sign in here') }}
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</body>
-</html>
-
-
+@endsection
