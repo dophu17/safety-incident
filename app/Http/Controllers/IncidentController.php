@@ -17,10 +17,13 @@ class IncidentController extends Controller
         $query = Incident::with('user')->latest();
 
         if (request()->routeIs('incidents.index')) {
-            // Public feed: show all incidents
+            // Employee view: show only incidents created by the current user
+            if (Auth::check()) {
+                $query->where('user_id', Auth::id());
+            }
             $incidents = $query->paginate(10);
         } else {
-            // Admin index: same for now, could filter
+            // Admin index: show all incidents
             $incidents = $query->paginate(20);
         }
 

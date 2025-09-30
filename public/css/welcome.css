@@ -541,24 +541,73 @@ body {
     border-radius: 20px;
 }
 
-/* Pagination */
+/* Pagination - Clean Bootstrap override */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.pagination .page-item {
+    display: inline-block;
+    margin: 0;
+}
+
 .pagination .page-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
     color: var(--primary-color);
+    background-color: #fff;
     border: 1px solid rgba(59, 130, 246, 0.2);
     border-radius: 8px;
-    margin: 0 0.25rem;
-    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 40px;
+    text-align: center;
+    line-height: 1.2;
+    font-size: 0.875rem;
 }
 
 .pagination .page-link:hover {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     color: white;
+    transform: translateY(-1px);
+    z-index: 1;
 }
 
 .pagination .page-item.active .page-link {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
+    color: white;
+    z-index: 2;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    border-radius: 8px;
+}
+
+/* Reset Bootstrap margins */
+.pagination .page-item:first-child .page-link {
+    margin-left: 0;
+}
+
+.pagination .page-item:last-child .page-link {
+    margin-right: 0;
 }
 
 /* Dropdown */

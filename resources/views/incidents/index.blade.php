@@ -10,10 +10,10 @@
             <div class="col-md-8">
                 <h1 class="display-5 fw-bold mb-3">
                     <i class="bi bi-shield-exclamation text-primary me-2"></i>
-                    {{ __('Company Incidents') }}
+                    {{ __('My Incidents') }}
                 </h1>
                 <p class="lead mb-0">
-                    {{ __('Monitor and manage safety incidents across your organization') }}
+                    {{ __('View and manage your reported safety incidents') }}
                 </p>
             </div>
             <div class="col-md-4 text-md-end">
@@ -28,52 +28,15 @@
 </div>
 
 <div class="container">
-    <!-- Stats Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3 col-6 mb-3">
-            <div class="content-card text-center">
-                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem;"></i>
-                <h3 class="h4 mt-2 mb-1">{{ $incidents->total() }}</h3>
-                <p class="text-muted mb-0">{{ __('Total Incidents') }}</p>
-            </div>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-            <div class="content-card text-center">
-                <i class="bi bi-clock text-info" style="font-size: 2rem;"></i>
-                <h3 class="h4 mt-2 mb-1">{{ $incidents->where('status', 'pending')->count() }}</h3>
-                <p class="text-muted mb-0">{{ __('Pending') }}</p>
-            </div>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-            <div class="content-card text-center">
-                <i class="bi bi-search text-primary" style="font-size: 2rem;"></i>
-                <h3 class="h4 mt-2 mb-1">{{ $incidents->where('status', 'investigating')->count() }}</h3>
-                <p class="text-muted mb-0">{{ __('Investigating') }}</p>
-            </div>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-            <div class="content-card text-center">
-                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
-                <h3 class="h4 mt-2 mb-1">{{ $incidents->where('status', 'resolved')->count() }}</h3>
-                <p class="text-muted mb-0">{{ __('Resolved') }}</p>
-            </div>
-        </div>
-    </div>
 
     <!-- Incidents List -->
     <div class="content-card">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="h4 mb-0">
-                <i class="bi bi-list-ul me-2"></i>{{ __('Recent Incidents') }}
+                <i class="bi bi-list-ul me-2"></i>{{ __('My Reported Incidents') }}
             </h2>
-            <div class="d-flex gap-2">
-                <select class="form-select form-select-sm" style="width: auto;">
-                    <option>{{ __('All Status') }}</option>
-                    <option value="pending">{{ __('Pending') }}</option>
-                    <option value="investigating">{{ __('Investigating') }}</option>
-                    <option value="resolved">{{ __('Resolved') }}</option>
-                    <option value="closed">{{ __('Closed') }}</option>
-                </select>
+            <div class="text-muted">
+                {{ __('Total: ') . $incidents->total() . __(' incidents') }}
             </div>
         </div>
 
@@ -134,11 +97,11 @@
         @empty
             <div class="text-center py-5">
                 <i class="bi bi-shield-check text-muted" style="font-size: 4rem;"></i>
-                <h3 class="h4 mt-3 mb-2">{{ __('No Incidents Found') }}</h3>
-                <p class="text-muted mb-4">{{ __('Great! No safety incidents have been reported yet.') }}</p>
+                <h3 class="h4 mt-3 mb-2">{{ __('No Incidents Reported') }}</h3>
+                <p class="text-muted mb-4">{{ __('You haven\'t reported any safety incidents yet.') }}</p>
                 @auth
                     <a href="{{ route('incidents.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>{{ __('Report First Incident') }}
+                        <i class="bi bi-plus-circle me-2"></i>{{ __('Report Your First Incident') }}
                     </a>
                 @endauth
             </div>
@@ -147,8 +110,14 @@
 
     <!-- Pagination -->
     @if($incidents->hasPages())
-        <div class="d-flex justify-content-center mt-4">
-            {{ $incidents->links() }}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
+                    <div class="pagination-wrapper">
+                        {{ $incidents->links('pagination::bootstrap-5') }}
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 </div>
@@ -171,6 +140,29 @@
 
 .hover-shadow:hover {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.pagination-wrapper {
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .pagination-wrapper {
+        padding: 0.75rem 1rem;
+    }
+    
+    .pagination .page-link {
+        padding: 0.4rem 0.6rem;
+        min-width: 35px;
+        font-size: 0.9rem;
+    }
 }
 </style>
 @endpush
