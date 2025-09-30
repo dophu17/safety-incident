@@ -1,0 +1,81 @@
+@extends('layouts.app')
+
+@section('title', __('Register') . ' - ' . config('app.name'))
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="content-card">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus-fill text-primary" style="font-size: 3rem;"></i>
+                    <h1 class="h3 mb-2">{{ __('Create Account') }}</h1>
+                    <p class="text-muted">{{ __('Join SafetyAI to manage risks effectively') }}</p>
+                </div>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form method="post" action="{{ route('register.post') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-person me-1"></i>{{ __('Full Name') }}
+                        </label>
+                        <input type="text" name="name" class="form-control" 
+                               value="{{ old('name') }}" required autofocus
+                               placeholder="{{ __('Enter your full name') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-envelope me-1"></i>{{ __('Email Address') }}
+                        </label>
+                        <input type="email" name="email" class="form-control" 
+                               value="{{ old('email') }}" required
+                               placeholder="{{ __('Enter your email') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-lock me-1"></i>{{ __('Password') }}
+                        </label>
+                        <input type="password" name="password" class="form-control" required
+                               placeholder="{{ __('Create a password') }}">
+                        <div class="form-text">{{ __('Password must be at least 8 characters') }}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-lock-fill me-1"></i>{{ __('Confirm Password') }}
+                        </label>
+                        <input type="password" name="password_confirmation" class="form-control" required
+                               placeholder="{{ __('Confirm your password') }}">
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mb-3" type="submit">
+                        <i class="bi bi-person-plus me-2"></i>{{ __('Create Account') }}
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <p class="mb-0 text-muted">
+                        {{ __('Already have an account?') }}
+                        <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">
+                            {{ __('Sign in here') }}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
