@@ -32,6 +32,24 @@ Route::middleware('setLocale')->group(function () {
         }
         return redirect()->back();
     })->name('language.switch');
+    
+    // Test translation route
+    Route::get('/test-translation', function () {
+        $locale = app()->getLocale();
+        $sessionLocale = session('locale', 'not set');
+        return response()->json([
+            'current_locale' => $locale,
+            'session_locale' => $sessionLocale,
+            'config_locale' => config('app.locale'),
+            'translations' => [
+                'Dashboard' => __('Dashboard'),
+                'Login' => __('Login'),
+                'Register' => __('Register'),
+                'Logout' => __('Logout'),
+            ],
+            'test' => 'Switch to: <a href="/language/ja">Japanese</a> | <a href="/language/vn">Vietnamese</a>'
+        ], 200, [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    });
 
     // Dashboard - redirect based on role
     Route::middleware('auth')->get('/dashboard', function () {

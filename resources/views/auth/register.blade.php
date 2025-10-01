@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Register') . ' - ' . config('app.name'))
+@section('title', __('auth.Register') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="container">
@@ -50,7 +50,7 @@
                         </label>
                         <input type="password" name="password" class="form-control" required
                                placeholder="{{ __('auth.Enter your password') }}">
-                        <div class="form-text">{{ __('Minimum 8 characters') }}</div>
+                        <div class="form-text">{{ __('messages.Minimum 8 characters') }}</div>
                     </div>
                     
                     <div class="mb-4">
@@ -70,7 +70,7 @@
                     <p class="mb-0 text-muted">
                         {{ __('auth.Already have an account?') }}
                         <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">
-                            {{ __('Login') }}
+                            {{ __('auth.Login') }}
                         </a>
                     </p>
                 </div>

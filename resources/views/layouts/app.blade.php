@@ -40,10 +40,8 @@
                             <i class="bi bi-globe me-1"></i>
                             @if(app()->getLocale() == 'ja')
                                 日本語
-                            @elseif(app()->getLocale() == 'vn')
-                                Tiếng Việt
                             @else
-                                English
+                                Tiếng Việt
                             @endif
                         </a>
                         <ul class="dropdown-menu">
@@ -64,7 +62,7 @@
                         @if(auth()->user()->role === 'manager')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                                    <i class="bi bi-gear me-1"></i>{{ __('Admin') }}
+                                    <i class="bi bi-gear me-1"></i>{{ __('messages.Admin') }}
                                 </a>
                             </li>
                         @endif
@@ -119,7 +117,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="mb-0 small">&copy; 2024 SafetyAI. {{ __('All rights reserved.') }}</p>
+                    <p class="mb-0 small">&copy; 2024 SafetyAI. {{ __('messages.All rights reserved.') }}</p>
                 </div>
             </div>
         </div>

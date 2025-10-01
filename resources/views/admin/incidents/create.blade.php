@@ -10,14 +10,14 @@
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-plus-circle me-2"></i>
-                    {{ __('Report Safety Incident') }}
+                    {{ __('messages.Report Safety Incident') }}
                 </h5>
             </div>
             <div class="card-body">
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>{{ __('Please correct the following errors:') }}</strong>
+                        <strong>{{ __('messages.Please correct the following errors:') }}</strong>
                         <ul class="mb-0 mt-2">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -33,15 +33,15 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <h6 class="text-primary mb-3">
-                                <i class="fas fa-info-circle me-2"></i>{{ __('Basic Information') }}
+                                <i class="fas fa-info-circle me-2"></i>{{ __('messages.Basic Information') }}
                             </h6>
                         </div>
                         
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">{{ __('Incident Title') }} <span class="text-danger">*</span></label>
+                            <label class="form-label">{{ __('messages.Incident Title') }} <span class="text-danger">*</span></label>
                             <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" 
                                    value="{{ old('title') }}"
-                                   placeholder="{{ __('Brief description of the incident') }}">
+                                   placeholder="{{ __('messages.Brief description of the incident') }}">
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -50,7 +50,7 @@
                         <div class="col-md-12 mb-3">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>
-                                    {{ __('Detailed Description') }} <span class="text-danger">*</span>
+                                    {{ __('messages.Detailed Description') }} <span class="text-danger">*</span>
                                     <span class="badge bg-primary ms-2">
                                         <i class="fas fa-robot me-1"></i>{{ __('admin.AI will analyze') }}
                                     </span>
@@ -60,7 +60,7 @@
                                 </button>
                             </label>
                             <textarea id="contentTextarea" name="content" rows="8" class="form-control @error('content') is-invalid @enderror" style="resize: vertical; overflow-y: auto;"
-                                      placeholder="{{ __('Provide detailed information about what happened, when, and any contributing factors') }}">{{ old('content') }}</textarea>
+                                      placeholder="{{ __('messages.Provide detailed information about what happened, when, and any contributing factors') }}">{{ old('content') }}</textarea>
                             
                             <div class="card border-primary mt-2">
                                 <div class="card-body p-3 bg-light">
@@ -103,21 +103,21 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <h6 class="text-primary mb-3">
-                                <i class="fas fa-map-marker-alt me-2"></i>{{ __('Location & Time') }}
+                                <i class="fas fa-map-marker-alt me-2"></i>{{ __('messages.Location & Time') }}
                             </h6>
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">{{ __('Location') }} <span class="text-danger">*</span></label>
+                            <label class="form-label">{{ __('messages.Location') }} <span class="text-danger">*</span></label>
                             <input type="text" name="location" class="form-control @error('location') is-invalid @enderror" 
                                    value="{{ old('location') }}"
-                                   placeholder="{{ __('Where did the incident occur?') }}">
+                                   placeholder="{{ __('messages.Where did the incident occur?') }}">
                             @error('location')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">{{ __('Occurred at') }} <span class="text-danger">*</span></label>
+                            <label class="form-label">{{ __('messages.Occurred at') }} <span class="text-danger">*</span></label>
                             <input type="datetime-local" name="occurred_at" class="form-control @error('occurred_at') is-invalid @enderror" 
                                    value="{{ old('occurred_at') }}">
                             @error('occurred_at')
@@ -130,35 +130,35 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <h6 class="text-primary mb-3">
-                                <i class="fas fa-exclamation-triangle me-2"></i>{{ __('Severity Assessment') }}
+                                <i class="fas fa-exclamation-triangle me-2"></i>{{ __('messages.Severity Assessment') }}
                             </h6>
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">{{ __('Severity Level') }}</label>
+                            <label class="form-label">{{ __('messages.Severity Level') }}</label>
                             <select name="severity" class="form-select">
                                 <option value="low" {{ old('severity') == 'low' ? 'selected' : '' }}>
-                                    {{ __('Low') }} - {{ __('Minor incident, no injuries') }}
+                                    {{ __('messages.Low') }} - {{ __('messages.Minor incident, no injuries') }}
                                 </option>
                                 <option value="medium" {{ old('severity') == 'medium' ? 'selected' : '' }}>
-                                    {{ __('Medium') }} - {{ __('Moderate impact, minor injuries') }}
+                                    {{ __('messages.Medium') }} - {{ __('messages.Moderate impact, minor injuries') }}
                                 </option>
                                 <option value="high" {{ old('severity') == 'high' ? 'selected' : '' }}>
-                                    {{ __('High') }} - {{ __('Serious incident, significant impact') }}
+                                    {{ __('messages.High') }} - {{ __('messages.Serious incident, significant impact') }}
                                 </option>
                                 <option value="critical" {{ old('severity') == 'critical' ? 'selected' : '' }}>
-                                    {{ __('Critical') }} - {{ __('Major incident, severe injuries or fatalities') }}
+                                    {{ __('messages.Critical') }} - {{ __('messages.Major incident, severe injuries or fatalities') }}
                                 </option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">{{ __('Immediate Action Required') }}</label>
+                            <label class="form-label">{{ __('messages.Immediate Action Required') }}</label>
                             <select name="immediate_action" class="form-select">
                                 <option value="no" {{ old('immediate_action') == 'no' ? 'selected' : '' }}>
-                                    {{ __('No immediate action required') }}
+                                    {{ __('messages.No immediate action required') }}
                                 </option>
                                 <option value="yes" {{ old('immediate_action') == 'yes' ? 'selected' : '' }}>
-                                    {{ __('Immediate action required') }}
+                                    {{ __('messages.Immediate action required') }}
                                 </option>
                             </select>
                         </div>
@@ -168,16 +168,16 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <h6 class="text-primary mb-3">
-                                <i class="fas fa-camera me-2"></i>{{ __('Evidence & Documentation') }}
+                                <i class="fas fa-camera me-2"></i>{{ __('messages.Evidence & Documentation') }}
                             </h6>
                         </div>
                         
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">{{ __('Upload Images') }}</label>
+                            <label class="form-label">{{ __('messages.Upload Images') }}</label>
                             <input type="file" name="images[]" class="form-control @error('images.*') is-invalid @enderror" 
                                    accept="image/*" multiple
                                    onchange="previewImages(this)">
-                            <small class="form-text text-muted">{{ __('Upload photos related to the incident (optional)') }}</small>
+                            <small class="form-text text-muted">{{ __('messages.Upload photos related to the incident (optional)') }}</small>
                             @error('images.*')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -192,10 +192,10 @@
                     <!-- Submit Buttons -->
                     <div class="d-flex gap-2 justify-content-end">
                         <a href="{{ route('admin.incidents.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-2"></i>{{ __('Cancel') }}
+                            <i class="fas fa-times me-2"></i>{{ __('messages.Cancel') }}
                         </a>
                         <button class="btn btn-primary" type="submit">
-                            <i class="fas fa-save me-2"></i>{{ __('Submit Report') }}
+                            <i class="fas fa-save me-2"></i>{{ __('messages.Submit Report') }}
                         </button>
                     </div>
                 </form>

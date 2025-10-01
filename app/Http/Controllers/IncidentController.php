@@ -55,7 +55,7 @@ class IncidentController extends Controller
         ]);
 
         // Redirect back to create page with success message
-        return redirect()->route('incidents.create')->with('success', __('Incident reported successfully. Thank you for your report!'));
+        return redirect()->route('incidents.create')->with('success', __('messages.Incident reported successfully. Thank you for your report!'));
     }
 
     /**
@@ -130,7 +130,7 @@ class IncidentController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => __('Status updated successfully'),
+                'message' => __('admin.Status Updated'),
                 'status' => $incident->status,
             ]);
         }

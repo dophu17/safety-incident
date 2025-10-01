@@ -32,7 +32,7 @@ class AuthController extends Controller
             } else {
                 // Employee redirects to create incident page
                 return redirect()->intended(route('incidents.create'))
-                    ->with('welcome', __('Welcome back! You can report safety incidents here.'));
+                    ->with('welcome', __('messages.Welcome back! You can report safety incidents here.'));
             }
         }
 
@@ -71,7 +71,7 @@ class AuthController extends Controller
         
         // Redirect to admin dashboard with welcome message
         return redirect()->route('admin.dashboard')
-            ->with('status', __('Welcome! Your company has been created. You can now add employees and manage incidents.'));
+            ->with('status', __('messages.Welcome! Your company has been created. You can now add employees and manage incidents.'));
     }
 
     public function logout(Request $request)

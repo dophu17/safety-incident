@@ -190,10 +190,8 @@
                                     <i class="fas fa-globe me-1"></i>
                                     @if(app()->getLocale() == 'ja')
                                         日本語
-                                    @elseif(app()->getLocale() == 'vn')
-                                        Tiếng Việt
                                     @else
-                                        English
+                                        Tiếng Việt
                                     @endif
                                 </button>
                                 <ul class="dropdown-menu">

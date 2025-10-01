@@ -16,14 +16,14 @@
                     </h5>
                     <div class="d-flex gap-2">
                         <a href="{{ route('admin.incidents.edit', $incident) }}" class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit me-1"></i>{{ __('Edit') }}
+                            <i class="fas fa-edit me-1"></i>{{ __('messages.Edit') }}
                         </a>
                         <form action="{{ route('incidents.destroy', $incident) }}" method="POST" class="d-inline" 
-                              onsubmit="return confirm('{{ __('Are you sure you want to delete this incident?') }}')">
+                              onsubmit="return confirm('{{ __('messages.Are you sure you want to delete this incident?') }}')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
+                                <i class="fas fa-trash me-1"></i>{{ __('messages.Delete') }}
                             </button>
                         </form>
                     </div>
@@ -82,7 +82,7 @@
                                     <div class="card border-0 shadow-sm">
                                         <img class="card-img-top" 
                                              src="{{ asset('storage/' . $img) }}" 
-                                             alt="{{ __('Incident image') }} {{ $index + 1 }}"
+                                             alt="{{ __('messages.Incident image') }} {{ $index + 1 }}"
                                              style="height: 200px; object-fit: cover; cursor: pointer;"
                                              onclick="openImageModal('{{ asset('storage/' . $img) }}')">
                                     </div>
@@ -133,7 +133,7 @@
                     <br><small class="text-muted">{{ $incident->user?->email }}</small>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-map-marker-alt me-1"></i>{{ __('Location') }}</small>
+                    <small class="text-muted d-block"><i class="fas fa-map-marker-alt me-1"></i>{{ __('messages.Location') }}</small>
                     <strong>{{ $incident->location }}</strong>
                 </div>
                 <div class="mb-3">
@@ -152,16 +152,16 @@
                     <small class="text-muted d-block"><i class="fas fa-exclamation-triangle me-1"></i>{{ __('admin.Severity') }}</small>
                     @switch($incident->severity ?? 'low')
                         @case('low')
-                            <span class="badge bg-info">{{ __('Low') }}</span>
+                            <span class="badge bg-info">{{ __('messages.Low') }}</span>
                             @break
                         @case('medium')
-                            <span class="badge bg-warning">{{ __('Medium') }}</span>
+                            <span class="badge bg-warning">{{ __('messages.Medium') }}</span>
                             @break
                         @case('high')
-                            <span class="badge bg-danger">{{ __('High') }}</span>
+                            <span class="badge bg-danger">{{ __('messages.High') }}</span>
                             @break
                         @case('critical')
-                            <span class="badge bg-dark">{{ __('Critical') }}</span>
+                            <span class="badge bg-dark">{{ __('messages.Critical') }}</span>
                             @break
                     @endswitch
                 </div>
@@ -189,7 +189,7 @@
                         <i class="fas fa-list me-2"></i>{{ __('admin.All Incidents') }}
                     </a>
                     <a href="{{ route('admin.incidents.edit', $incident) }}" class="btn btn-outline-warning">
-                        <i class="fas fa-edit me-2"></i>{{ __('Edit') }}
+                            <i class="fas fa-edit me-2"></i>{{ __('messages.Edit') }}
                     </a>
                     <button class="btn btn-outline-secondary" onclick="window.print()">
                         <i class="fas fa-print me-2"></i>{{ __('admin.Export Data') }}
@@ -209,7 +209,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
-                <img id="modalImage" src="" class="img-fluid rounded" alt="{{ __('Incident image') }}">
+                <img id="modalImage" src="" class="img-fluid rounded" alt="{{ __('messages.Incident image') }}">
             </div>
         </div>
     </div>
@@ -224,7 +224,7 @@ function openImageModal(imageSrc) {
 }
 
 function updateStatus(incidentId, newStatus) {
-    if (!confirm("{{ __('Are you sure you want to update the status?') }}")) {
+    if (!confirm("{{ __('messages.Are you sure you want to update the status?') }}")) {
         return;
     }
 
@@ -249,7 +249,7 @@ function updateStatus(incidentId, newStatus) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert("{{ __('Error!') }}");
+            alert("{{ __('messages.Error!') }}");
     });
 }
 </script>

@@ -136,7 +136,7 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.users.index')
-            ->with('status', __('Employee created successfully'));
+            ->with('status', __('messages.Employee created successfully'));
     }
 
     /**
@@ -180,7 +180,7 @@ class AdminController extends Controller
         $user->update($data);
 
         return redirect()->route('admin.users.index')
-            ->with('status', __('User updated successfully'));
+            ->with('status', __('messages.User updated successfully'));
     }
 
     /**
@@ -195,13 +195,13 @@ class AdminController extends Controller
 
         // Prevent deleting yourself
         if ($user->id === Auth::id()) {
-            return redirect()->back()->with('error', __('You cannot delete yourself'));
+            return redirect()->back()->with('error', __('messages.You cannot delete yourself'));
         }
 
         $user->delete();
 
         return redirect()->route('admin.users.index')
-            ->with('status', __('User deleted successfully'));
+            ->with('status', __('messages.User deleted successfully'));
     }
 
     /**
@@ -321,6 +321,6 @@ class AdminController extends Controller
 
         $company->update($validated);
 
-        return redirect()->route('admin.company')->with('status', __('Company information updated successfully'));
+        return redirect()->route('admin.company')->with('status', __('messages.Company information updated successfully'));
     }
 }
