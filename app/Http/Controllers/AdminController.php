@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Incident;
 use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -113,7 +116,9 @@ class AdminController extends Controller
      */
     public function users(Request $request)
     {
-        $query = User::latest();
+        // Only show users from the same company
+        $companyId = Auth::user()->company_id;
+        $query = User::where('company_id', $companyId)->with('company')->latest();
 
         // Filter by role
         if ($request->has('role') && $request->role !== '') {
@@ -131,7 +136,103 @@ class AdminController extends Controller
 
         $users = $query->paginate(20);
 
-        return view('admin.users', compact('users'));
+        return view('admin.users.index', compact('users'));
+    }
+
+    /**
+     * Show create user form
+     */
+    public function createUser()
+    {
+        return view('admin.users.create');
+    }
+
+    /**
+     * Store a new user (employee)
+     */
+    public function storeUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'min:8'],
+        ]);
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'employee',
+            'company_id' => Auth::user()->company_id,
+        ]);
+
+        return redirect()->route('admin.users.index')
+            ->with('status', __('Employee created successfully'));
+    }
+
+    /**
+     * Show edit user form
+     */
+    public function editUser(User $user)
+    {
+        // Check if user belongs to the same company
+        if ($user->company_id !== Auth::user()->company_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('admin.users.edit', compact('user'));
+    }
+
+    /**
+     * Update user information
+     */
+    public function updateUser(Request $request, User $user)
+    {
+        // Check if user belongs to the same company
+        if ($user->company_id !== Auth::user()->company_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'password' => ['nullable', 'min:8'],
+        ]);
+
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ];
+
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.users.index')
+            ->with('status', __('User updated successfully'));
+    }
+
+    /**
+     * Delete user
+     */
+    public function deleteUser(User $user)
+    {
+        // Check if user belongs to the same company
+        if ($user->company_id !== Auth::user()->company_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Prevent deleting yourself
+        if ($user->id === Auth::id()) {
+            return redirect()->back()->with('error', __('You cannot delete yourself'));
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('status', __('User deleted successfully'));
     }
 
     /**
@@ -256,5 +357,56 @@ class AdminController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Display company information
+     */
+    public function company()
+    {
+        $user = Auth::user();
+        $company = $user->company;
+
+        // If manager doesn't have a company yet, create one
+        if (!$company && $user->role === 'manager') {
+            $company = Company::create([
+                'name' => 'My Company',
+                'size' => 'small',
+            ]);
+            
+            $user->company_id = $company->id;
+            $user->save();
+        }
+
+        return view('admin.company', compact('company'));
+    }
+
+    /**
+     * Update company information
+     */
+    public function updateCompany(Request $request)
+    {
+        $user = Auth::user();
+        $company = $user->company;
+
+        if (!$company) {
+            return redirect()->back()->with('error', __('Company not found'));
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'website' => ['nullable', 'url', 'max:255'],
+            'size' => ['required', 'in:small,medium,large,enterprise'],
+            'employee_count' => ['nullable', 'integer', 'min:1'],
+            'industry' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $company->update($validated);
+
+        return redirect()->route('admin.company')->with('status', __('Company information updated successfully'));
     }
 }

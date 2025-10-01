@@ -6,26 +6,21 @@ use App\Models\Incident;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class IncidentController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $query = Incident::with('user')->latest();
+        // Only managers can view incident list
+        $this->authorize('viewAny', Incident::class);
 
-        if (request()->routeIs('incidents.index')) {
-            // Employee view: show only incidents created by the current user
-            if (Auth::check()) {
-                $query->where('user_id', Auth::id());
-            }
-            $incidents = $query->paginate(10);
-        } else {
-            // Admin index: show all incidents
-            $incidents = $query->paginate(20);
-        }
+        $query = Incident::with('user')->latest();
+        $incidents = $query->paginate(20);
 
         return view('incidents.index', compact('incidents'));
     }
@@ -60,14 +55,16 @@ class IncidentController extends Controller
 
         $incident = Incident::create([
             'user_id' => Auth::id(),
+            'company_id' => Auth::user()->company_id,
             'title' => $validated['title'],
             'content' => $validated['content'] ?? null,
             'location' => $validated['location'] ?? null,
             'occurred_at' => $validated['occurred_at'] ?? null,
-            'images' => $imagePaths,
+            'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
-        return redirect()->route('incidents.show', $incident)->with('status', 'created');
+        // Redirect back to create page with success message
+        return redirect()->route('incidents.create')->with('success', __('Incident reported successfully. Thank you for your report!'));
     }
 
     /**
@@ -75,6 +72,9 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident)
     {
+        // Only managers can view incident details
+        $this->authorize('view', $incident);
+        
         return view('incidents.show', compact('incident'));
     }
 
@@ -100,9 +100,18 @@ class IncidentController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'occurred_at' => ['nullable', 'date'],
             'images.*' => ['nullable', 'image', 'max:5120'],
+            'delete_images' => ['nullable', 'array'],
         ]);
 
+        // Get current images or empty array
         $imagePaths = $incident->images ?? [];
+
+        // Remove deleted images
+        if ($request->has('delete_images')) {
+            $imagePaths = array_values(array_diff($imagePaths, $request->delete_images));
+        }
+
+        // Add new images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $imagePaths[] = $image->store('incidents', 'public');
@@ -114,7 +123,7 @@ class IncidentController extends Controller
             'content' => $validated['content'] ?? null,
             'location' => $validated['location'] ?? null,
             'occurred_at' => $validated['occurred_at'] ?? null,
-            'images' => $imagePaths,
+            'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
         return redirect()->route('incidents.show', $incident)->with('status', 'updated');
@@ -128,5 +137,29 @@ class IncidentController extends Controller
         $this->authorize('delete', $incident);
         $incident->delete();
         return redirect()->route('incidents.index')->with('status', 'deleted');
+    }
+
+    /**
+     * Update the status of the incident.
+     */
+    public function updateStatus(Request $request, Incident $incident)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,investigating,resolved,closed'],
+        ]);
+
+        $incident->update([
+            'status' => $validated['status'],
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('Status updated successfully'),
+                'status' => $incident->status,
+            ]);
+        }
+
+        return redirect()->back()->with('status', 'Status updated successfully');
     }
 }

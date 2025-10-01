@@ -65,11 +65,12 @@
                                     <a class="nav-link" href="{{ route('admin.dashboard') }}">
                                         <i class="bi bi-speedometer2 me-1"></i>{{ __('messages.Dashboard') }}
                                     </a>
-                                @else
-                                    <a class="nav-link" href="{{ route('incidents.index') }}">
-                                        <i class="bi bi-speedometer2 me-1"></i>{{ __('messages.Dashboard') }}
-                                    </a>
                                 @endif
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('incidents.create') }}">
+                                    <i class="bi bi-plus-circle me-1"></i>{{ __('Report Incident') }}
+                                </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
@@ -125,9 +126,15 @@
                     <div class="d-flex flex-wrap gap-3">
             @if (Route::has('login'))
                     @auth
-                                <a href="{{ url('/dashboard') }}" class="btn btn-warning btn-custom">
-                                    <i class="bi bi-speedometer2 me-2"></i>{{ app()->getLocale() == 'ja' ? 'ダッシュボードにアクセス' : 'Truy cập Dashboard' }}
-                        </a>
+                        @if(auth()->user()->role === 'manager')
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-warning btn-custom">
+                                <i class="bi bi-speedometer2 me-2"></i>{{ app()->getLocale() == 'ja' ? 'ダッシュボードにアクセス' : 'Truy cập Dashboard' }}
+                            </a>
+                        @else
+                            <a href="{{ route('incidents.create') }}" class="btn btn-warning btn-custom">
+                                <i class="bi bi-plus-circle me-2"></i>{{ app()->getLocale() == 'ja' ? '事故を報告する' : 'Báo cáo rủi ro' }}
+                            </a>
+                        @endif
                     @else
                                 <a href="{{ route('login') }}" class="btn btn-warning btn-custom">
                                     <i class="bi bi-play-circle me-2"></i>{{ app()->getLocale() == 'ja' ? '今すぐ始める' : 'Bắt đầu ngay' }}
@@ -292,9 +299,15 @@
                     <div class="d-flex flex-wrap justify-content-center gap-3">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="btn btn-light btn-custom">
-                                    <i class="bi bi-speedometer2 me-2"></i>{{ app()->getLocale() == 'ja' ? 'ダッシュボードにアクセス' : 'Truy cập Dashboard' }}
-                                </a>
+                                @if(auth()->user()->role === 'manager')
+                                    <a href="{{ route('admin.dashboard') }}" class="btn btn-light btn-custom">
+                                        <i class="bi bi-speedometer2 me-2"></i>{{ app()->getLocale() == 'ja' ? 'ダッシュボードにアクセス' : 'Truy cập Dashboard' }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('incidents.create') }}" class="btn btn-light btn-custom">
+                                        <i class="bi bi-plus-circle me-2"></i>{{ app()->getLocale() == 'ja' ? '事故を報告する' : 'Báo cáo rủi ro' }}
+                                    </a>
+                                @endif
                             @else
                                 <a href="{{ route('login') }}" class="btn btn-light btn-custom">
                                     <i class="bi bi-play-circle me-2"></i>{{ app()->getLocale() == 'ja' ? '無料で始める' : 'Bắt đầu miễn phí' }}

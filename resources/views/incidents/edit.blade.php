@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Report Incident') . ' - ' . config('app.name'))
+@section('title', __('Edit Incident') . ' - ' . config('app.name'))
 
 @section('content')
 <!-- Page Header -->
@@ -9,16 +9,16 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <h1 class="display-5 fw-bold mb-3">
-                    <i class="bi bi-plus-circle text-primary me-2"></i>
-                    {{ __('Report Safety Incident') }}
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    {{ __('Edit Safety Incident') }}
                 </h1>
                 <p class="lead mb-0">
-                    {{ __('Help us maintain a safe workplace by reporting incidents promptly') }}
+                    {{ __('Update incident information') }}
                 </p>
             </div>
             <div class="col-md-4 text-md-end">
-                <a href="{{ url('/') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>{{ __('Back to Home') }}
+                <a href="{{ route('incidents.show', $incident) }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>{{ __('Back to Details') }}
                 </a>
             </div>
         </div>
@@ -29,30 +29,6 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="content-card">
-                @if(session('welcome'))
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <i class="bi bi-emoji-smile-fill me-2"></i>
-                        <strong>{{ __('Welcome!') }}</strong> {{ session('welcome') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        <strong>{{ __('Success!') }}</strong> {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        <strong>{{ __('Error!') }}</strong> {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <i class="bi bi-exclamation-triangle me-2"></i>
@@ -65,8 +41,9 @@
                     </div>
                 @endif
 
-                <form action="{{ route('incidents.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('incidents.update', $incident) }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     
                     <!-- Basic Information -->
                     <div class="mb-4">
@@ -80,7 +57,7 @@
                                 <i class="bi bi-card-text me-1"></i>{{ __('Incident Title') }} <span class="text-danger">*</span>
                             </label>
                             <input type="text" name="title" class="form-control" 
-                                   value="{{ old('title') }}" required
+                                   value="{{ old('title', $incident->title) }}" required
                                    placeholder="{{ __('Brief description of the incident') }}">
                         </div>
                         
@@ -89,7 +66,7 @@
                                 <i class="bi bi-file-text me-1"></i>{{ __('Detailed Description') }} <span class="text-danger">*</span>
                             </label>
                             <textarea name="content" rows="5" class="form-control" required
-                                      placeholder="{{ __('Provide detailed information about what happened, when, and any contributing factors') }}">{{ old('content') }}</textarea>
+                                      placeholder="{{ __('Provide detailed information about what happened, when, and any contributing factors') }}">{{ old('content', $incident->content) }}</textarea>
                         </div>
                     </div>
 
@@ -106,7 +83,7 @@
                                     <i class="bi bi-geo-alt me-1"></i>{{ __('Location') }} <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" name="location" class="form-control" 
-                                       value="{{ old('location') }}" required
+                                       value="{{ old('location', $incident->location) }}" required
                                        placeholder="{{ __('Where did the incident occur?') }}">
                             </div>
                             <div class="col-md-6 mb-3">
@@ -114,16 +91,48 @@
                                     <i class="bi bi-calendar me-1"></i>{{ __('Date & Time') }} <span class="text-danger">*</span>
                                 </label>
                                 <input type="datetime-local" name="occurred_at" class="form-control" 
-                                       value="{{ old('occurred_at') }}" required>
+                                       value="{{ old('occurred_at', $incident->occurred_at?->format('Y-m-d\TH:i')) }}" required>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Evidence -->
+                    <!-- Current Images -->
+                    @if ($incident->images && count($incident->images) > 0)
+                        <div class="mb-4">
+                            <h3 class="h5 mb-3">
+                                <i class="bi bi-images text-primary me-2"></i>
+                                {{ __('Current Images') }}
+                            </h3>
+                            <div class="row g-3" id="currentImages">
+                                @foreach ($incident->images as $index => $img)
+                                    <div class="col-md-3 col-6" id="image-{{ $index }}">
+                                        <div class="card border">
+                                            <img class="card-img-top" 
+                                                 src="{{ asset('storage/' . $img) }}" 
+                                                 alt="{{ __('Incident image') }} {{ $index + 1 }}"
+                                                 style="height: 150px; object-fit: cover;">
+                                            <div class="card-body p-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" 
+                                                           name="delete_images[]" value="{{ $img }}" 
+                                                           id="delete-{{ $index }}">
+                                                    <label class="form-check-label small" for="delete-{{ $index }}">
+                                                        {{ __('Delete') }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- New Evidence -->
                     <div class="mb-4">
                         <h3 class="h5 mb-3">
                             <i class="bi bi-camera text-primary me-2"></i>
-                            {{ __('Evidence & Documentation') }}
+                            {{ __('Add New Images') }}
                         </h3>
                         
                         <div class="mb-3">
@@ -134,7 +143,7 @@
                                    accept="image/*" multiple
                                    onchange="previewImages(this)">
                             <div class="form-text">
-                                {{ __('Upload photos related to the incident (optional)') }}
+                                {{ __('Upload additional photos related to the incident (optional)') }}
                             </div>
                         </div>
                         
@@ -155,16 +164,16 @@
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Severity Level') }}</label>
                                 <select name="severity" class="form-select">
-                                    <option value="low" {{ old('severity') == 'low' ? 'selected' : '' }}>
+                                    <option value="low" {{ old('severity', $incident->severity ?? 'low') == 'low' ? 'selected' : '' }}>
                                         {{ __('Low') }} - {{ __('Minor incident, no injuries') }}
                                     </option>
-                                    <option value="medium" {{ old('severity') == 'medium' ? 'selected' : '' }}>
+                                    <option value="medium" {{ old('severity', $incident->severity ?? 'low') == 'medium' ? 'selected' : '' }}>
                                         {{ __('Medium') }} - {{ __('Moderate impact, minor injuries') }}
                                     </option>
-                                    <option value="high" {{ old('severity') == 'high' ? 'selected' : '' }}>
+                                    <option value="high" {{ old('severity', $incident->severity ?? 'low') == 'high' ? 'selected' : '' }}>
                                         {{ __('High') }} - {{ __('Serious incident, significant impact') }}
                                     </option>
-                                    <option value="critical" {{ old('severity') == 'critical' ? 'selected' : '' }}>
+                                    <option value="critical" {{ old('severity', $incident->severity ?? 'low') == 'critical' ? 'selected' : '' }}>
                                         {{ __('Critical') }} - {{ __('Major incident, severe injuries or fatalities') }}
                                     </option>
                                 </select>
@@ -172,10 +181,10 @@
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Immediate Action Required') }}</label>
                                 <select name="immediate_action" class="form-select">
-                                    <option value="no" {{ old('immediate_action') == 'no' ? 'selected' : '' }}>
+                                    <option value="no" {{ old('immediate_action', $incident->immediate_action ?? 'no') == 'no' ? 'selected' : '' }}>
                                         {{ __('No immediate action required') }}
                                     </option>
-                                    <option value="yes" {{ old('immediate_action') == 'yes' ? 'selected' : '' }}>
+                                    <option value="yes" {{ old('immediate_action', $incident->immediate_action ?? 'no') == 'yes' ? 'selected' : '' }}>
                                         {{ __('Immediate action required') }}
                                     </option>
                                 </select>
@@ -185,11 +194,11 @@
 
                     <!-- Submit Buttons -->
                     <div class="d-flex gap-3 justify-content-end">
-                        <a href="{{ url('/') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('incidents.show', $incident) }}" class="btn btn-outline-secondary">
                             <i class="bi bi-x-circle me-2"></i>{{ __('Cancel') }}
                         </a>
                         <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-send me-2"></i>{{ __('Submit Report') }}
+                            <i class="bi bi-check-circle me-2"></i>{{ __('Update Incident') }}
                         </button>
                     </div>
                 </form>
@@ -230,36 +239,7 @@ function previewImages(input) {
         preview.style.display = 'none';
     }
 }
-
-// Set default occurred_at to current time
-document.addEventListener('DOMContentLoaded', function() {
-    const now = new Date();
-    const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-    document.querySelector('input[name="occurred_at"]').value = localDateTime;
-    
-    // Scroll to top if there's a success/error message
-    const alerts = document.querySelectorAll('.alert');
-    if (alerts.length > 0) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // Auto-hide success and welcome messages after 5 seconds
-        const successAlert = document.querySelector('.alert-success');
-        if (successAlert) {
-            setTimeout(() => {
-                const bsAlert = new bootstrap.Alert(successAlert);
-                bsAlert.close();
-            }, 5000);
-        }
-        
-        const welcomeAlert = document.querySelector('.alert-info');
-        if (welcomeAlert) {
-            setTimeout(() => {
-                const bsAlert = new bootstrap.Alert(welcomeAlert);
-                bsAlert.close();
-            }, 7000);
-        }
-    }
-});
 </script>
 @endpush
 @endsection
+

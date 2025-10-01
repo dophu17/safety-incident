@@ -27,9 +27,25 @@
                 </div>
             </div>
             <div class="col-md-4 text-md-end">
-                <a href="{{ route('incidents.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>{{ __('Back to Incidents') }}
-                </a>
+                <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+                    <a href="{{ route('incidents.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>{{ __('Back') }}
+                    </a>
+                    @can('update', $incident)
+                        <a href="{{ route('incidents.edit', $incident) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil me-2"></i>{{ __('Edit') }}
+                        </a>
+                    @endcan
+                    @can('delete', $incident)
+                        <form action="{{ route('incidents.destroy', $incident) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this incident?') }}')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-2"></i>{{ __('Delete') }}
+                            </button>
+                        </form>
+                    @endcan
+                </div>
             </div>
         </div>
     </div>
@@ -93,10 +109,10 @@
                                 <div class="col-md-4 col-6">
                                     <div class="card border-0 shadow-sm">
                                         <img class="card-img-top" 
-                                             src="{{ Storage::disk('public')->url($img) }}" 
+                                             src="{{ asset('storage/' . $img) }}" 
                                              alt="{{ __('Incident image') }} {{ $index + 1 }}"
                                              style="height: 200px; object-fit: cover; cursor: pointer;"
-                                             onclick="openImageModal('{{ Storage::disk('public')->url($img) }}')">
+                                             onclick="openImageModal('{{ asset('storage/' . $img) }}')">
                                     </div>
                                 </div>
                             @endforeach
@@ -112,14 +128,14 @@
                                 <i class="bi bi-gear text-primary me-2"></i>
                                 {{ __('Management Actions') }}
                             </h3>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-warning" onclick="updateStatus('investigating')">
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button class="btn btn-warning" onclick="updateStatus({{ $incident->id }}, 'investigating')">
                                     <i class="bi bi-search me-2"></i>{{ __('Start Investigation') }}
                                 </button>
-                                <button class="btn btn-success" onclick="updateStatus('resolved')">
+                                <button class="btn btn-success" onclick="updateStatus({{ $incident->id }}, 'resolved')">
                                     <i class="bi bi-check-circle me-2"></i>{{ __('Mark as Resolved') }}
                                 </button>
-                                <button class="btn btn-secondary" onclick="updateStatus('closed')">
+                                <button class="btn btn-secondary" onclick="updateStatus({{ $incident->id }}, 'closed')">
                                     <i class="bi bi-x-circle me-2"></i>{{ __('Close Incident') }}
                                 </button>
                             </div>
@@ -226,13 +242,35 @@ function openImageModal(imageSrc) {
     new bootstrap.Modal(document.getElementById('imageModal')).show();
 }
 
-function updateStatus(status) {
-    if (confirm('{{ __("Are you sure you want to update the status?") }}')) {
-        // Here you would typically make an AJAX request to update the status
-        console.log('Updating status to:', status);
-        // For now, just show an alert
-        alert('{{ __("Status update functionality will be implemented") }}');
+function updateStatus(incidentId, newStatus) {
+    if (!confirm('{{ __("Are you sure you want to update the status?") }}')) {
+        return;
     }
+
+    fetch(`/incidents/${incidentId}/status`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload page to show updated status
+            location.reload();
+        } else {
+            alert('{{ __("Error updating status") }}');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('{{ __("Error updating status") }}');
+    });
 }
 
 function shareIncident() {

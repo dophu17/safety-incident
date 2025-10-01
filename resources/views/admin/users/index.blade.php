@@ -47,6 +47,9 @@
         <div class="chart-container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">Danh sách người dùng ({{ $users->total() }} kết quả)</h5>
+                <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-2"></i>Thêm nhân viên
+                </a>
             </div>
             
             <div class="table-responsive">
@@ -103,17 +106,18 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i>
-                                    </button>
+                                    </a>
                                     @if($user->id !== Auth::id())
-                                    <button class="btn btn-sm btn-outline-danger" title="Xóa" 
-                                            onclick="confirmDelete({{ $user->id }})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <form action="{{ route('admin.users.delete', $user) }}" method="POST" class="d-inline" 
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác!')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                     @endif
                                 </div>
                             </td>
@@ -165,16 +169,10 @@
 
 @section('scripts')
 <script>
-function confirmDelete(userId) {
-    if (confirm('Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác!')) {
-        // Implement delete functionality here
-        console.log('Delete user:', userId);
-    }
-}
-
 // Auto-submit form when role select changes
 document.getElementById('role').addEventListener('change', function() {
     this.form.submit();
 });
 </script>
 @endsection
+

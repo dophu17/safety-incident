@@ -61,11 +61,11 @@
                     </li>
                     
                     @auth
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('incidents.index') }}">
                                 <i class="bi bi-list-ul me-1"></i>{{ __('Incidents') }}
                             </a>
-                        </li>
+                        </li> -->
                         @if(auth()->user()->role === 'manager')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
