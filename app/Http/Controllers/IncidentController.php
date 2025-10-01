@@ -27,9 +27,11 @@ class IncidentController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'occurred_at' => ['nullable', 'date'],
+            'content' => ['required', 'string'],
+            'location' => ['required', 'string', 'max:255'],
+            'occurred_at' => ['required', 'date'],
+            'severity' => ['nullable', 'in:low,medium,high,critical'],
+            'immediate_action' => ['nullable', 'in:no,yes'],
             'images.*' => ['nullable', 'image', 'max:5120'],
         ]);
 
@@ -47,6 +49,8 @@ class IncidentController extends Controller
             'content' => $validated['content'] ?? null,
             'location' => $validated['location'] ?? null,
             'occurred_at' => $validated['occurred_at'] ?? null,
+            'severity' => $validated['severity'] ?? 'low',
+            'immediate_action' => $validated['immediate_action'] ?? 'no',
             'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
@@ -63,9 +67,11 @@ class IncidentController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'occurred_at' => ['nullable', 'date'],
+            'content' => ['required', 'string'],
+            'location' => ['required', 'string', 'max:255'],
+            'occurred_at' => ['required', 'date'],
+            'severity' => ['nullable', 'in:low,medium,high,critical'],
+            'immediate_action' => ['nullable', 'in:no,yes'],
             'images.*' => ['nullable', 'image', 'max:5120'],
             'delete_images' => ['nullable', 'array'],
         ]);
@@ -90,6 +96,8 @@ class IncidentController extends Controller
             'content' => $validated['content'] ?? null,
             'location' => $validated['location'] ?? null,
             'occurred_at' => $validated['occurred_at'] ?? null,
+            'severity' => $validated['severity'] ?? 'low',
+            'immediate_action' => $validated['immediate_action'] ?? 'no',
             'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 

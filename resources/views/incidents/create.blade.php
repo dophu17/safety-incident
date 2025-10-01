@@ -79,17 +79,57 @@
                             <label class="form-label">
                                 <i class="bi bi-card-text me-1"></i>{{ __('Incident Title') }} <span class="text-danger">*</span>
                             </label>
-                            <input type="text" name="title" class="form-control" 
-                                   value="{{ old('title') }}" required
+                            <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" 
+                                   value="{{ old('title') }}"
                                    placeholder="{{ __('Brief description of the incident') }}">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="bi bi-file-text me-1"></i>{{ __('Detailed Description') }} <span class="text-danger">*</span>
+                                <span class="badge bg-gradient text-white ms-2" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                    <i class="bi bi-robot me-1"></i>AI sẽ phân tích
+                                </span>
                             </label>
-                            <textarea name="content" rows="5" class="form-control" required
-                                      placeholder="{{ __('Provide detailed information about what happened, when, and any contributing factors') }}">{{ old('content') }}</textarea>
+                            <textarea name="content" rows="8" class="form-control @error('content') is-invalid @enderror" style="resize: vertical; overflow-y: auto;"
+                                      placeholder="Nhập mô tả chi tiết...&#10;&#10;Ví dụ:&#10;- Diễn biến: Máy CNC-05 dừng đột ngột lúc 14:30...&#10;- Thiết bị: CNC FANUC Series 30i, 5 năm tuổi...&#10;- Người liên quan: 2 công nhân đang vận hành...&#10;- Nguyên nhân: Nghi do quá nhiệt...&#10;- Hậu quả: Dừng sản xuất 2 giờ...&#10;- Đã xử lý: Tắt nguồn điện, gọi bảo trì...">{{ old('content') }}</textarea>
+                            @error('content')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            
+                            <div class="card border-primary mt-2">
+                                <div class="card-body p-3" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-lightbulb-fill text-warning me-2" style="font-size: 1.2rem;"></i>
+                                        <div>
+                                            <strong class="text-primary">Hướng dẫn nhập để AI phân tích tốt nhất:</strong>
+                                            <div class="row mt-2">
+                                                <div class="col-md-6">
+                                                    <ul class="mb-0 small">
+                                                        <li class="mb-1">📍 <strong>Diễn biến:</strong> Mô tả chi tiết sự cố</li>
+                                                        <li class="mb-1">⚙️ <strong>Thiết bị:</strong> Tên máy, model, tình trạng</li>
+                                                        <li class="mb-1">👥 <strong>Người liên quan:</strong> Số người, ai chứng kiến</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <ul class="mb-0 small">
+                                                        <li class="mb-1">💥 <strong>Nguyên nhân:</strong> Nguyên nhân có thể</li>
+                                                        <li class="mb-1">🩹 <strong>Hậu quả:</strong> Thương tích, thiệt hại</li>
+                                                        <li class="mb-1">🔧 <strong>Đã xử lý:</strong> Biện pháp ban đầu</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-warning mb-0 mt-2 py-2 px-3 small">
+                                                <i class="bi bi-robot me-1"></i>
+                                                <strong>AI sẽ phân tích:</strong> Mức độ rủi ro, nguyên nhân gốc rễ, giải pháp khắc phục, và dự đoán sự cố tương tự
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -105,42 +145,23 @@
                                 <label class="form-label">
                                     <i class="bi bi-geo-alt me-1"></i>{{ __('Location') }} <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" name="location" class="form-control" 
-                                       value="{{ old('location') }}" required
+                                <input type="text" name="location" class="form-control @error('location') is-invalid @enderror" 
+                                       value="{{ old('location') }}"
                                        placeholder="{{ __('Where did the incident occur?') }}">
+                                @error('location')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">
                                     <i class="bi bi-calendar me-1"></i>{{ __('Date & Time') }} <span class="text-danger">*</span>
                                 </label>
-                                <input type="datetime-local" name="occurred_at" class="form-control" 
-                                       value="{{ old('occurred_at') }}" required>
+                                <input type="datetime-local" name="occurred_at" class="form-control @error('occurred_at') is-invalid @enderror" 
+                                       value="{{ old('occurred_at') }}">
+                                @error('occurred_at')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Evidence -->
-                    <div class="mb-4">
-                        <h3 class="h5 mb-3">
-                            <i class="bi bi-camera text-primary me-2"></i>
-                            {{ __('Evidence & Documentation') }}
-                        </h3>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="bi bi-image me-1"></i>{{ __('Upload Images') }}
-                            </label>
-                            <input type="file" name="images[]" class="form-control" 
-                                   accept="image/*" multiple
-                                   onchange="previewImages(this)">
-                            <div class="form-text">
-                                {{ __('Upload photos related to the incident (optional)') }}
-                            </div>
-                        </div>
-                        
-                        <!-- Image Preview -->
-                        <div id="imagePreview" class="row mt-3" style="display: none;">
-                            <!-- Preview images will be inserted here -->
                         </div>
                     </div>
 
@@ -180,6 +201,31 @@
                                     </option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Evidence -->
+                    <div class="mb-4">
+                        <h3 class="h5 mb-3">
+                            <i class="bi bi-camera text-primary me-2"></i>
+                            {{ __('Evidence & Documentation') }}
+                        </h3>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-image me-1"></i>{{ __('Upload Images') }}
+                            </label>
+                            <input type="file" name="images[]" class="form-control" 
+                                   accept="image/*" multiple
+                                   onchange="previewImages(this)">
+                            <div class="form-text">
+                                {{ __('Upload photos related to the incident (optional)') }}
+                            </div>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="row mt-3" style="display: none;">
+                            <!-- Preview images will be inserted here -->
                         </div>
                     </div>
 

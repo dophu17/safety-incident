@@ -18,6 +18,8 @@ class Incident extends Model
         'location',
         'occurred_at',
         'status',
+        'severity',
+        'immediate_action',
         'images',
     ];
 

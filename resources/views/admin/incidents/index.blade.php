@@ -71,8 +71,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Tiêu đề</th>
-                            <th>Nội dung</th>
                             <th>Vị trí</th>
+                            <th>Mức độ</th>
                             <th>Người báo cáo</th>
                             <th>Thời gian xảy ra</th>
                             <th>Ngày tạo</th>
@@ -85,11 +85,29 @@
                             <td>#{{ $incident->id }}</td>
                             <td>
                                 <a href="{{ route('admin.incidents.show', $incident) }}" class="text-decoration-none">
-                                    {{ Str::limit($incident->title, 30) }}
+                                    {{ Str::limit($incident->title, 40) }}
                                 </a>
                             </td>
-                            <td>{{ Str::limit($incident->content, 50) ?: 'Không có' }}</td>
                             <td>{{ $incident->location ?: 'Không xác định' }}</td>
+                            <td>
+                                @switch($incident->severity ?? 'low')
+                                    @case('low')
+                                        <span class="badge bg-info">Thấp</span>
+                                        @break
+                                    @case('medium')
+                                        <span class="badge bg-warning">TB</span>
+                                        @break
+                                    @case('high')
+                                        <span class="badge bg-danger">Cao</span>
+                                        @break
+                                    @case('critical')
+                                        <span class="badge bg-dark">Nghiêm trọng</span>
+                                        @break
+                                @endswitch
+                                @if($incident->immediate_action === 'yes')
+                                    <i class="fas fa-bolt text-danger ms-1" title="Cần hành động ngay"></i>
+                                @endif
+                            </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">

@@ -144,9 +144,34 @@
                     <small class="text-muted d-block"><i class="fas fa-calendar-plus me-1"></i>Ngày báo cáo</small>
                     <strong>{{ $incident->created_at?->format('d/m/Y H:i') }}</strong>
                 </div>
-                <div class="mb-0">
+                <div class="mb-3">
                     <small class="text-muted d-block"><i class="fas fa-calendar-check me-1"></i>Cập nhật lần cuối</small>
                     <strong>{{ $incident->updated_at?->format('d/m/Y H:i') }}</strong>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted d-block"><i class="fas fa-exclamation-triangle me-1"></i>Mức độ</small>
+                    @switch($incident->severity ?? 'low')
+                        @case('low')
+                            <span class="badge bg-info">Thấp</span>
+                            @break
+                        @case('medium')
+                            <span class="badge bg-warning">Trung bình</span>
+                            @break
+                        @case('high')
+                            <span class="badge bg-danger">Cao</span>
+                            @break
+                        @case('critical')
+                            <span class="badge bg-dark">Rất nghiêm trọng</span>
+                            @break
+                    @endswitch
+                </div>
+                <div class="mb-0">
+                    <small class="text-muted d-block"><i class="fas fa-bolt me-1"></i>Hành động khẩn cấp</small>
+                    @if($incident->immediate_action === 'yes')
+                        <span class="badge bg-danger">Cần ngay</span>
+                    @else
+                        <span class="badge bg-secondary">Không cần</span>
+                    @endif
                 </div>
             </div>
         </div>
