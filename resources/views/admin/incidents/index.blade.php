@@ -53,7 +53,7 @@
                    class="btn btn-success me-2">
                     <i class="fas fa-download"></i> Xuất Excel
                 </a>
-                <a href="{{ route('incidents.create') }}" class="btn btn-primary">
+                <a href="{{ route('admin.incidents.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Tạo sự cố mới
                 </a>
             </div>
@@ -84,7 +84,7 @@
                         <tr>
                             <td>#{{ $incident->id }}</td>
                             <td>
-                                <a href="{{ route('incidents.show', $incident) }}" class="text-decoration-none">
+                                <a href="{{ route('admin.incidents.show', $incident) }}" class="text-decoration-none">
                                     {{ Str::limit($incident->title, 30) }}
                                 </a>
                             </td>
@@ -111,11 +111,11 @@
                             <td>{{ $incident->created_at->format('d/m/Y H:i') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('incidents.show', $incident) }}" 
+                                    <a href="{{ route('admin.incidents.show', $incident) }}" 
                                        class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('incidents.edit', $incident) }}" 
+                                    <a href="{{ route('admin.incidents.edit', $incident) }}" 
                                        class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -145,7 +145,7 @@
             <!-- Pagination -->
             @if($incidents->hasPages())
             <div class="d-flex justify-content-center mt-4">
-                {{ $incidents->appends(request()->query())->links() }}
+                {{ $incidents->appends(request()->query())->links('pagination::bootstrap-5') }}
             </div>
             @endif
         </div>
@@ -165,3 +165,4 @@ document.getElementById('date_to').addEventListener('change', function() {
 });
 </script>
 @endsection
+

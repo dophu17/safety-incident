@@ -74,6 +74,31 @@
         .dropdown-item:hover {
             background-color: rgba(102, 126, 234, 0.1);
         }
+        /* Pagination Styling */
+        .pagination {
+            margin-bottom: 0;
+        }
+        .page-link {
+            color: #667eea;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .page-link:hover {
+            color: #764ba2;
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+        }
+        .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
     </style>
 </head>
 <body class="font-sans antialiased">

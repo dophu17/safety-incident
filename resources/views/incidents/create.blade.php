@@ -27,7 +27,7 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="content-card">
                 @if(session('welcome'))
                     <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -197,6 +197,92 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+/* Enhanced styling for create incident page */
+.page-header {
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control:focus {
+    animation: inputGlow 0.3s ease;
+}
+
+@keyframes inputGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+    }
+}
+
+/* Better section headers */
+.content-card h3 {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+/* Enhanced buttons */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+
+.btn-primary:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Required field asterisk */
+.text-danger {
+    color: #ef4444 !important;
+    font-weight: 700;
+}
+</style>
+@endpush
 
 @push('scripts')
 <script>

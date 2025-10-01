@@ -11,19 +11,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class IncidentController extends Controller
 {
     use AuthorizesRequests;
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        // Only managers can view incident list
-        $this->authorize('viewAny', Incident::class);
-
-        $query = Incident::with('user')->latest();
-        $incidents = $query->paginate(20);
-
-        return view('incidents.index', compact('incidents'));
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -68,26 +55,6 @@ class IncidentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Incident $incident)
-    {
-        // Only managers can view incident details
-        $this->authorize('view', $incident);
-        
-        return view('incidents.show', compact('incident'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Incident $incident)
-    {
-        $this->authorize('update', $incident);
-        return view('incidents.edit', compact('incident'));
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Incident $incident)
@@ -126,7 +93,7 @@ class IncidentController extends Controller
             'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
-        return redirect()->route('incidents.show', $incident)->with('status', 'updated');
+        return redirect()->route('admin.incidents.show', $incident)->with('status', 'Cập nhật sự cố thành công');
     }
 
     /**
@@ -136,7 +103,7 @@ class IncidentController extends Controller
     {
         $this->authorize('delete', $incident);
         $incident->delete();
-        return redirect()->route('incidents.index')->with('status', 'deleted');
+        return redirect()->route('admin.incidents.index')->with('status', 'Xóa sự cố thành công');
     }
 
     /**

@@ -18,17 +18,21 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        // Thống kê tổng quan
-        $totalIncidents = Incident::count();
-        $totalUsers = User::count();
-        $totalManagers = User::where('role', 'manager')->count();
-        $totalEmployees = User::where('role', 'employee')->count();
+        // Only show data from the same company
+        $companyId = Auth::user()->company_id;
+
+        // Thống kê tổng quan - chỉ của công ty mình
+        $totalIncidents = Incident::where('company_id', $companyId)->count();
+        $totalUsers = User::where('company_id', $companyId)->count();
+        $totalManagers = User::where('company_id', $companyId)->where('role', 'manager')->count();
+        $totalEmployees = User::where('company_id', $companyId)->where('role', 'employee')->count();
 
         // Thống kê incidents theo tháng (6 tháng gần nhất)
         $monthlyIncidents = Incident::select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                 DB::raw('COUNT(*) as count')
             )
+            ->where('company_id', $companyId)
             ->where('created_at', '>=', Carbon::now()->subMonths(6))
             ->groupBy('month')
             ->orderBy('month')
@@ -39,6 +43,7 @@ class AdminController extends Controller
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as count')
             )
+            ->where('company_id', $companyId)
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->groupBy('date')
             ->orderBy('date')
@@ -46,6 +51,7 @@ class AdminController extends Controller
 
         // Thống kê incidents theo vị trí (top 10)
         $incidentsByLocation = Incident::select('location', DB::raw('COUNT(*) as count'))
+            ->where('company_id', $companyId)
             ->whereNotNull('location')
             ->where('location', '!=', '')
             ->groupBy('location')
@@ -55,6 +61,7 @@ class AdminController extends Controller
 
         // Thống kê incidents theo user (top 10)
         $incidentsByUser = Incident::with('user')
+            ->where('company_id', $companyId)
             ->select('user_id', DB::raw('COUNT(*) as count'))
             ->groupBy('user_id')
             ->orderByDesc('count')
@@ -71,37 +78,6 @@ class AdminController extends Controller
             'incidentsByLocation',
             'incidentsByUser'
         ));
-    }
-
-    /**
-     * Display incidents management page
-     */
-    public function incidents(Request $request)
-    {
-        $query = Incident::with('user')->latest();
-
-        // Filter by status if provided
-        if ($request->has('status') && $request->status !== '') {
-            // You can add status field to incidents table later
-            // $query->where('status', $request->status);
-        }
-
-        // Filter by date range
-        if ($request->has('date_from') && $request->date_from) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-        if ($request->has('date_to') && $request->date_to) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        // Filter by location
-        if ($request->has('location') && $request->location) {
-            $query->where('location', 'like', '%' . $request->location . '%');
-        }
-
-        $incidents = $query->paginate(20);
-
-        return view('admin.incidents', compact('incidents'));
     }
 
     /**
@@ -233,17 +209,23 @@ class AdminController extends Controller
      */
     public function statistics(Request $request)
     {
+        // Only show data from the same company
+        $companyId = Auth::user()->company_id;
+        
         $dateFrom = $request->get('date_from', Carbon::now()->subMonth()->format('Y-m-d'));
         $dateTo = $request->get('date_to', Carbon::now()->format('Y-m-d'));
 
-        // Thống kê incidents theo khoảng thời gian
-        $incidentsInPeriod = Incident::whereBetween('created_at', [$dateFrom, $dateTo])->count();
+        // Thống kê incidents theo khoảng thời gian - chỉ của công ty mình
+        $incidentsInPeriod = Incident::where('company_id', $companyId)
+            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->count();
 
         // Thống kê theo ngày trong tuần
         $incidentsByDayOfWeek = Incident::select(
                 DB::raw('DAYOFWEEK(created_at) as day_of_week'),
                 DB::raw('COUNT(*) as count')
             )
+            ->where('company_id', $companyId)
             ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->groupBy('day_of_week')
             ->orderBy('day_of_week')
@@ -254,6 +236,7 @@ class AdminController extends Controller
                 DB::raw('HOUR(created_at) as hour'),
                 DB::raw('COUNT(*) as count')
             )
+            ->where('company_id', $companyId)
             ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->groupBy('hour')
             ->orderBy('hour')
@@ -264,6 +247,7 @@ class AdminController extends Controller
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                 DB::raw('COUNT(*) as count')
             )
+            ->where('company_id', $companyId)
             ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->groupBy('month')
             ->orderBy('month')
@@ -271,6 +255,7 @@ class AdminController extends Controller
 
         // Thống kê theo user
         $incidentsByUser = Incident::with('user')
+            ->where('company_id', $companyId)
             ->select('user_id', DB::raw('COUNT(*) as count'))
             ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->groupBy('user_id')
@@ -286,70 +271,6 @@ class AdminController extends Controller
             'incidentsByMonth',
             'incidentsByUser'
         ));
-    }
-
-    /**
-     * Export incidents data
-     */
-    public function exportIncidents(Request $request)
-    {
-        $query = Incident::with('user');
-
-        // Apply same filters as incidents page
-        if ($request->has('date_from') && $request->date_from) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-        if ($request->has('date_to') && $request->date_to) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-        if ($request->has('location') && $request->location) {
-            $query->where('location', 'like', '%' . $request->location . '%');
-        }
-
-        $incidents = $query->get();
-
-        $filename = 'incidents_export_' . date('Y-m-d_H-i-s') . '.csv';
-        
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-
-        $callback = function() use ($incidents) {
-            $file = fopen('php://output', 'w');
-            
-            // CSV headers
-            fputcsv($file, [
-                'ID',
-                'Title',
-                'Content',
-                'Location',
-                'Occurred At',
-                'User Name',
-                'User Email',
-                'Created At',
-                'Updated At'
-            ]);
-
-            // CSV data
-            foreach ($incidents as $incident) {
-                fputcsv($file, [
-                    $incident->id,
-                    $incident->title,
-                    $incident->content,
-                    $incident->location,
-                    $incident->occurred_at,
-                    $incident->user->name,
-                    $incident->user->email,
-                    $incident->created_at,
-                    $incident->updated_at
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
     }
 
     /**
