@@ -110,7 +110,7 @@
                             </td>
                             <td>{{ $incident->created_at->format('d/m/Y H:i') }}</td>
                             <td>
-                                <div class="btn-group" role="group">
+                                <div class="d-flex gap-1">
                                     <a href="{{ route('admin.incidents.show', $incident) }}" 
                                        class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>

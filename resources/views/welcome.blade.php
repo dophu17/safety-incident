@@ -68,9 +68,11 @@
                                 @endif
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('incidents.create') }}">
-                                    <i class="bi bi-plus-circle me-1"></i>{{ __('Report Incident') }}
-                                </a>
+                                @if(auth()->user()->role === 'employee')
+                                    <a class="nav-link" href="{{ route('incidents.create') }}">
+                                        <i class="bi bi-plus-circle me-1"></i>{{ __('Report Incident') }}
+                                    </a>
+                                @endif
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
@@ -78,8 +80,6 @@
                                     {{ auth()->user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>{{ __('messages.Profile') }}</a></li>
-                                    <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form action="{{ route('logout') }}" method="post" class="d-inline">
                                             @csrf

@@ -61,7 +61,6 @@
                             <th>Email</th>
                             <th>Vai trò</th>
                             <th>Ngày tạo</th>
-                            <th>Trạng thái</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -94,18 +93,7 @@
                             </td>
                             <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
                             <td>
-                                @if($user->email_verified_at)
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-check-circle me-1"></i>Đã xác thực
-                                    </span>
-                                @else
-                                    <span class="badge bg-warning">
-                                        <i class="fas fa-clock me-1"></i>Chưa xác thực
-                                    </span>
-                                @endif
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
+                                <div class="d-flex gap-1">
                                     <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
                                         <i class="fas fa-edit"></i>
                                     </a>
