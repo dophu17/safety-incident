@@ -51,7 +51,7 @@
             <div>
                 <a href="{{ route('admin.incidents.export', request()->query()) }}" 
                    class="btn btn-success me-2">
-                    <i class="fas fa-download"></i> Xuất Excel
+                    <i class="fas fa-download"></i> Xuất CSV
                 </a>
                 <a href="{{ route('admin.incidents.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Tạo sự cố mới
