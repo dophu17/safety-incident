@@ -170,5 +170,9 @@ return [
     'Clear' => 'Xóa bộ lọc',
     'results' => 'kết quả',
     'Enter location...' => 'Nhập vị trí...',
+    'Percentage' => 'Tỷ lệ (%)',
+    'Incidents by Hour' => 'Sự cố theo giờ',
+    'View Details' => 'Xem chi tiết',
+    'Verified' => 'Đã xác thực',
 ];
 

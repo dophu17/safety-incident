@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Edit User')
-@section('page-title', __('Edit User'))
+@section('title', __('messages.Edit User'))
+@section('page-title', __('messages.Edit User'))
 
 @section('content')
 <div class="row">
@@ -10,7 +10,7 @@
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-user-edit me-2"></i>
-                    {{ __('User Information') }}
+                    {{ __('messages.User Information') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -19,7 +19,7 @@
                     @method('PUT')
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Full Name') }} <span class="text-danger">*</span></label>
+                        <label class="form-label">{{ __('messages.Full Name') }} <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
                                value="{{ old('name', $user->name) }}" required autofocus>
                         @error('name')
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Email') }} <span class="text-danger">*</span></label>
+                        <label class="form-label">{{ __('messages.Email') }} <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
                                value="{{ old('email', $user->email) }}" required>
                         @error('email')
@@ -37,15 +37,15 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Role') }}</label>
+                        <label class="form-label">{{ __('messages.Role') }}</label>
                         <input type="text" class="form-control" value="{{ ucfirst($user->role) }}" disabled>
-                        <small class="form-text text-muted">{{ __('Role cannot be changed') }}</small>
+                        <small class="form-text text-muted">{{ __('messages.Role cannot be changed') }}</small>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('New Password') }}</label>
+                        <label class="form-label">{{ __('messages.New Password') }}</label>
                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror">
-                        <small class="form-text text-muted">{{ __('Leave blank to keep current password') }}</small>
+                        <small class="form-text text-muted">{{ __('messages.Leave blank to keep current password') }}</small>
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -53,10 +53,10 @@
 
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-2"></i>{{ __('Cancel') }}
+                            <i class="fas fa-times me-2"></i>{{ __('messages.Cancel') }}
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>{{ __('Update User') }}
+                            <i class="fas fa-save me-2"></i>{{ __('messages.Update User') }}
                         </button>
                     </div>
                 </form>

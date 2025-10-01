@@ -170,5 +170,9 @@ return [
     'Clear' => 'クリア',
     'results' => '件',
     'Enter location...' => '場所を入力...',
+    'Percentage' => 'パーセント',
+    'Incidents by Hour' => '時間別インシデント',
+    'View Details' => '詳細表示',
+    'Verified' => '確認済み',
 ];
 

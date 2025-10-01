@@ -141,34 +141,34 @@
                     <nav class="nav flex-column">
                         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <i class="fas fa-tachometer-alt me-2"></i>
-                            Dashboard
+                            {{ __('admin.Dashboard') }}
                         </a>
                         <a href="{{ route('admin.statistics') }}" class="nav-link {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
                             <i class="fas fa-chart-bar me-2"></i>
-                            Thống kê chi tiết
+                            {{ __('admin.Detailed Statistics') }}
                         </a>
                         <a href="{{ route('admin.company') }}" class="nav-link {{ request()->routeIs('admin.company') ? 'active' : '' }}">
                             <i class="fas fa-building me-2"></i>
-                            Thông tin công ty
+                            {{ __('admin.Company Information') }}
                         </a>
                         <a href="{{ route('admin.incidents.index') }}" class="nav-link {{ request()->routeIs('admin.incidents.*') ? 'active' : '' }}">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            Quản lý sự cố
+                            {{ __('admin.Incident Management') }}
                         </a>
                         <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                             <i class="fas fa-users me-2"></i>
-                            Quản lý người dùng
+                            {{ __('admin.User Management') }}
                         </a>
                         <hr class="text-white-50">
                         <a href="{{ url('/') }}" class="nav-link">
                             <i class="fas fa-home me-2"></i>
-                            Về trang chủ
+                            {{ __('messages.Go Home') }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}" class="d-inline">
                             @csrf
                             <button type="submit" class="nav-link w-100 text-start border-0 bg-transparent">
                                 <i class="fas fa-sign-out-alt me-2"></i>
-                                Đăng xuất
+                                {{ __('messages.Logout') }}
                             </button>
                         </form>
                     </nav>
@@ -182,7 +182,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="mb-0">@yield('page-title', 'Dashboard')</h2>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted me-2">Xin chào, {{ Auth::user()->name }}</span>
+                            <span class="text-muted me-2">{{ Auth::user()->name }}</span>
                             
                             <!-- Language Dropdown -->
                             <div class="dropdown">

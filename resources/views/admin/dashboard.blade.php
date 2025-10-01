@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Admin Dashboard')
-@section('page-title', 'Tổng quan hệ thống')
+@section('title', __('admin.Dashboard'))
+@section('page-title', __('admin.Overview Statistics'))
 
 @section('content')
 <!-- Statistics Cards -->
@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalIncidents) }}</h3>
-                    <p class="text-muted mb-0">Tổng sự cố</p>
+                    <p class="text-muted mb-0">{{ __('admin.Total Incidents') }}</p>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalUsers) }}</h3>
-                    <p class="text-muted mb-0">Tổng người dùng</p>
+                    <p class="text-muted mb-0">{{ __('admin.Total Employees') }}</p>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalManagers) }}</h3>
-                    <p class="text-muted mb-0">Quản lý</p>
+                    <p class="text-muted mb-0">{{ __('admin.Managers') }}</p>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalEmployees) }}</h3>
-                    <p class="text-muted mb-0">Nhân viên</p>
+                    <p class="text-muted mb-0">{{ __('admin.Employees') }}</p>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
     <!-- Monthly Incidents Chart -->
     <div class="col-lg-6 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo tháng (6 tháng gần nhất)</h5>
+            <h5 class="mb-3">{{ __('admin.Monthly Incident Trend') }}</h5>
             <div style="height: 250px;">
                 <canvas id="monthlyChart"></canvas>
             </div>
@@ -77,7 +77,7 @@
     <!-- Incidents by Location -->
     <div class="col-lg-6 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo vị trí (Top 5)</h5>
+            <h5 class="mb-3">{{ __('admin.Incidents by Location') }}</h5>
             <div style="height: 250px;">
                 <canvas id="locationChart"></canvas>
             </div>
@@ -89,15 +89,15 @@
     <!-- Incidents by User -->
     <div class="col-lg-12 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo người dùng (Top 10)</h5>
+            <h5 class="mb-3">{{ __('admin.User Statistics') }}</h5>
             <div class="table-responsive">
                 <table class="table table-sm table-hover">
                     <thead class="table-light">
                         <tr>
                             <th width="60">#</th>
-                            <th>Người dùng</th>
-                            <th width="120" class="text-center">Số lượng</th>
-                            <th>Biểu đồ</th>
+                            <th>{{ __('admin.User') }}</th>
+                            <th width="120" class="text-center">{{ __('admin.Incidents') }}</th>
+                            <th>{{ __('admin.Statistics') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,7 +129,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">Không có dữ liệu</td>
+                            <td colspan="4" class="text-center text-muted py-4">{{ __('admin.No incidents found.') }}</td>
                         </tr>
                         @endforelse
                     </tbody>

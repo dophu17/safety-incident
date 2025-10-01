@@ -1,23 +1,23 @@
 @extends('admin.layout')
 
-@section('title', 'Thống kê chi tiết')
-@section('page-title', 'Thống kê chi tiết')
+@section('title', __('admin.Detailed Statistics'))
+@section('page-title', __('admin.Detailed Statistics'))
 
 @section('content')
 <!-- Date Range Filter -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="chart-container">
-            <h5 class="mb-3">Chọn khoảng thời gian</h5>
+            <h5 class="mb-3">{{ __('admin.Filters') }}</h5>
             <form method="GET" action="{{ route('admin.statistics') }}">
                 <div class="row">
                     <div class="col-md-3 mb-3">
-                        <label for="date_from" class="form-label">Từ ngày</label>
+                        <label for="date_from" class="form-label">{{ __('admin.From Date') }}</label>
                         <input type="date" class="form-control" id="date_from" name="date_from" 
                                value="{{ $dateFrom }}">
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="date_to" class="form-label">Đến ngày</label>
+                        <label for="date_to" class="form-label">{{ __('admin.To Date') }}</label>
                         <input type="date" class="form-control" id="date_to" name="date_to" 
                                value="{{ $dateTo }}">
                     </div>
@@ -25,7 +25,7 @@
                         <label class="form-label">&nbsp;</label>
                         <div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-chart-bar"></i> Cập nhật thống kê
+                                <i class="fas fa-chart-bar"></i> {{ __('messages.Update') }}
                             </button>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                         <label class="form-label">&nbsp;</label>
                         <div>
                             <a href="{{ route('admin.statistics') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-refresh"></i> Reset
+                                <i class="fas fa-refresh"></i> {{ __('messages.Reset') }}
                             </a>
                         </div>
                     </div>
@@ -48,25 +48,25 @@
     <div class="col-md-3 mb-3">
         <div class="stat-card p-4 text-center">
             <h3 class="text-primary">{{ number_format($incidentsInPeriod) }}</h3>
-            <p class="text-muted mb-0">Sự cố trong khoảng thời gian</p>
+            <p class="text-muted mb-0">{{ __('admin.Total Incidents') }}</p>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-card p-4 text-center">
             <h3 class="text-success">{{ $incidentsByUser->count() }}</h3>
-            <p class="text-muted mb-0">Người dùng báo cáo</p>
+            <p class="text-muted mb-0">{{ __('admin.Top Reporters') }}</p>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-card p-4 text-center">
             <h3 class="text-info">{{ $incidentsByMonth->count() }}</h3>
-            <p class="text-muted mb-0">Tháng có sự cố</p>
+            <p class="text-muted mb-0">{{ __('admin.Monthly Trend') }}</p>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-card p-4 text-center">
             <h3 class="text-warning">{{ $incidentsByDayOfWeek->count() }}</h3>
-            <p class="text-muted mb-0">Ngày trong tuần có sự cố</p>
+            <p class="text-muted mb-0">{{ __('admin.Incidents by Day of Week') }}</p>
         </div>
     </div>
 </div>
@@ -75,7 +75,7 @@
     <!-- Incidents by Day of Week -->
     <div class="col-lg-6 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo ngày trong tuần</h5>
+            <h5 class="mb-3">{{ __('admin.Incidents by Day of Week') }}</h5>
             <div style="height: 280px;">
                 <canvas id="dayOfWeekChart"></canvas>
             </div>
@@ -85,7 +85,7 @@
     <!-- Incidents by Hour -->
     <div class="col-lg-6 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo giờ trong ngày</h5>
+            <h5 class="mb-3">{{ __('admin.Incidents by Hour') }}</h5>
             <div style="height: 280px;">
                 <canvas id="hourChart"></canvas>
             </div>
@@ -97,7 +97,7 @@
     <!-- Incidents by Month -->
     <div class="col-lg-12 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo tháng</h5>
+            <h5 class="mb-3">{{ __('admin.Incidents by Month') }}</h5>
             <div style="height: 300px;">
                 <canvas id="monthChart"></canvas>
             </div>
@@ -109,25 +109,33 @@
 <div class="row">
     <div class="col-12">
         <div class="chart-container">
-            <h5 class="mb-3">Thống kê chi tiết theo ngày trong tuần</h5>
+            <h5 class="mb-3">{{ __('admin.Incidents by Day of Week') }}</h5>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Thứ</th>
-                            <th>Số sự cố</th>
-                            <th>Tỷ lệ (%)</th>
-                            <th>Biểu đồ</th>
+                            <th>{{ __('admin.Date') }}</th>
+                            <th>{{ __('admin.Incidents') }}</th>
+                            <th>{{ __('admin.Percentage') }}</th>
+                            <th>{{ __('admin.Statistics') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @php
                             $totalIncidents = $incidentsByDayOfWeek->sum('count');
-                            $dayNames = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+                            $dayNames = [
+                                __('admin.Sunday'),
+                                __('admin.Monday'),
+                                __('admin.Tuesday'),
+                                __('admin.Wednesday'),
+                                __('admin.Thursday'),
+                                __('admin.Friday'),
+                                __('admin.Saturday')
+                            ];
                         @endphp
                         @foreach($incidentsByDayOfWeek as $dayData)
                         @php
-                            $dayName = $dayNames[$dayData->day_of_week - 1] ?? 'Không xác định';
+                            $dayName = $dayNames[$dayData->day_of_week - 1] ?? __('admin.No');
                             $percentage = $totalIncidents > 0 ? round(($dayData->count / $totalIncidents) * 100, 1) : 0;
                         @endphp
                         <tr>
@@ -167,7 +175,7 @@ const dayOfWeekChart = new Chart(dayOfWeekCtx, {
             return $dayNames[$item->day_of_week - 1] ?? 'N/A';
         })) !!},
         datasets: [{
-            label: 'Số sự cố',
+            label: '{{ __("admin.Incidents") }}',
             data: {!! json_encode($incidentsByDayOfWeek->pluck('count')) !!},
             backgroundColor: [
                 'rgba(255, 99, 132, 0.8)',
@@ -228,7 +236,7 @@ const hourChart = new Chart(hourCtx, {
     data: {
         labels: {!! json_encode($incidentsByHour->pluck('hour')->map(function($h) { return $h . 'h'; })) !!},
         datasets: [{
-            label: 'Số sự cố',
+            label: '{{ __("admin.Incidents") }}',
             data: {!! json_encode($incidentsByHour->pluck('count')) !!},
             backgroundColor: 'rgba(153, 102, 255, 0.8)',
             borderColor: 'rgba(153, 102, 255, 1)',
@@ -272,7 +280,7 @@ const monthChart = new Chart(monthCtx, {
     data: {
         labels: {!! json_encode($incidentsByMonth->pluck('month')) !!},
         datasets: [{
-            label: 'Số sự cố',
+            label: '{{ __("admin.Incidents") }}',
             data: {!! json_encode($incidentsByMonth->pluck('count')) !!},
             backgroundColor: 'rgba(75, 192, 192, 0.8)',
             borderColor: 'rgba(75, 192, 192, 1)',

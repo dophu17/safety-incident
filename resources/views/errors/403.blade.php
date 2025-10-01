@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ __('Access Denied') }} - {{ config('app.name') }}</title>
+    <title>{{ __('messages.Access Denied') }} - {{ config('app.name') }}</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -54,27 +54,27 @@
                     <div class="error-container">
                         <i class="bi bi-shield-exclamation error-icon text-danger"></i>
                         <div class="error-code text-danger">403</div>
-                        <h2 class="mb-3 text-dark">{{ __('Access Denied') }}</h2>
+                        <h2 class="mb-3 text-dark">{{ __('messages.Access Denied') }}</h2>
                         <p class="lead text-muted mb-4">
-                            {{ __('You do not have permission to access this page.') }}
+                            {{ __('messages.You do not have permission to access this page.') }}
                         </p>
                         
                         @auth
                             @if(auth()->user()->role === 'employee')
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
-                                    {{ __('As an employee, you can only report new incidents. Viewing incident lists and details is restricted to managers only.') }}
+                                    {{ __('messages.As an employee, you can only report new incidents. Viewing incident lists and details is restricted to managers only.') }}
                                 </div>
                             @endif
                         @endauth
                         
                         <div class="d-flex gap-3 justify-content-center mt-4">
                             <a href="{{ url('/') }}" class="btn btn-primary">
-                                <i class="bi bi-house-door me-2"></i>{{ __('Go Home') }}
+                                <i class="bi bi-house-door me-2"></i>{{ __('messages.Go Home') }}
                             </a>
                             @auth
                                 <a href="{{ route('incidents.create') }}" class="btn btn-success">
-                                    <i class="bi bi-plus-circle me-2"></i>{{ __('Report Incident') }}
+                                    <i class="bi bi-plus-circle me-2"></i>{{ __('messages.Report Incident') }}
                                 </a>
                             @endauth
                         </div>
