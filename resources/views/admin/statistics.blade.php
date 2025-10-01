@@ -76,7 +76,9 @@
     <div class="col-lg-6 mb-4">
         <div class="chart-container">
             <h5 class="mb-3">Sự cố theo ngày trong tuần</h5>
-            <canvas id="dayOfWeekChart" height="200"></canvas>
+            <div style="height: 280px;">
+                <canvas id="dayOfWeekChart"></canvas>
+            </div>
         </div>
     </div>
     
@@ -84,52 +86,20 @@
     <div class="col-lg-6 mb-4">
         <div class="chart-container">
             <h5 class="mb-3">Sự cố theo giờ trong ngày</h5>
-            <canvas id="hourChart" height="200"></canvas>
+            <div style="height: 280px;">
+                <canvas id="hourChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="row">
     <!-- Incidents by Month -->
-    <div class="col-lg-8 mb-4">
+    <div class="col-lg-12 mb-4">
         <div class="chart-container">
             <h5 class="mb-3">Sự cố theo tháng</h5>
-            <canvas id="monthChart" height="200"></canvas>
-        </div>
-    </div>
-    
-    <!-- Top Users -->
-    <div class="col-lg-4 mb-4">
-        <div class="chart-container">
-            <h5 class="mb-3">Top người dùng báo cáo</h5>
-            <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Người dùng</th>
-                            <th>Số lượng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($incidentsByUser as $userIncident)
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 12px;">
-                                        {{ substr($userIncident->user->name, 0, 1) }}
-                                    </div>
-                                    <span>{{ $userIncident->user->name }}</span>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-primary">{{ $userIncident->count }}</span></td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="2" class="text-center text-muted">Không có dữ liệu</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div style="height: 300px;">
+                <canvas id="monthChart"></canvas>
             </div>
         </div>
     </div>
@@ -187,26 +157,38 @@
 
 @section('scripts')
 <script>
-// Day of Week Chart
+// Day of Week Chart - Đơn giản dạng bar thay vì doughnut
 const dayOfWeekCtx = document.getElementById('dayOfWeekChart').getContext('2d');
 const dayOfWeekChart = new Chart(dayOfWeekCtx, {
-    type: 'doughnut',
+    type: 'bar',
     data: {
         labels: {!! json_encode($incidentsByDayOfWeek->map(function($item) {
-            $dayNames = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
-            return $dayNames[$item->day_of_week - 1] ?? 'Không xác định';
+            $dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+            return $dayNames[$item->day_of_week - 1] ?? 'N/A';
         })) !!},
         datasets: [{
+            label: 'Số sự cố',
             data: {!! json_encode($incidentsByDayOfWeek->pluck('count')) !!},
             backgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56',
-                '#4BC0C0',
-                '#9966FF',
-                '#FF9F40',
-                '#FF6384'
-            ]
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 206, 86, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(153, 102, 255, 0.8)',
+                'rgba(255, 159, 64, 0.8)',
+                'rgba(201, 203, 207, 0.8)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(201, 203, 207, 1)'
+            ],
+            borderWidth: 2,
+            borderRadius: 5
         }]
     },
     options: {
@@ -214,63 +196,113 @@ const dayOfWeekChart = new Chart(dayOfWeekCtx, {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                position: 'bottom'
+                display: false
             }
-        }
-    }
-});
-
-// Hour Chart
-const hourCtx = document.getElementById('hourChart').getContext('2d');
-const hourChart = new Chart(hourCtx, {
-    type: 'bar',
-    data: {
-        labels: {!! json_encode($incidentsByHour->pluck('hour')) !!},
-        datasets: [{
-            label: 'Số sự cố',
-            data: {!! json_encode($incidentsByHour->pluck('count')) !!},
-            backgroundColor: 'rgba(54, 162, 235, 0.8)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        },
         scales: {
             y: {
                 beginAtZero: true,
                 ticks: {
-                    stepSize: 1
+                    stepSize: 1,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 12,
+                        weight: 'bold'
+                    }
                 }
             }
         }
     }
 });
 
-// Month Chart
-const monthCtx = document.getElementById('monthChart').getContext('2d');
-const monthChart = new Chart(monthCtx, {
-    type: 'line',
+// Hour Chart - Giữ dạng bar nhưng cải thiện
+const hourCtx = document.getElementById('hourChart').getContext('2d');
+const hourChart = new Chart(hourCtx, {
+    type: 'bar',
     data: {
-        labels: {!! json_encode($incidentsByMonth->pluck('month')) !!},
+        labels: {!! json_encode($incidentsByHour->pluck('hour')->map(function($h) { return $h . 'h'; })) !!},
         datasets: [{
             label: 'Số sự cố',
-            data: {!! json_encode($incidentsByMonth->pluck('count')) !!},
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.1,
-            fill: true
+            data: {!! json_encode($incidentsByHour->pluck('count')) !!},
+            backgroundColor: 'rgba(153, 102, 255, 0.8)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 2,
+            borderRadius: 5
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
         scales: {
             y: {
                 beginAtZero: true,
                 ticks: {
-                    stepSize: 1
+                    stepSize: 1,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 10
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Month Chart - Đơn giản dạng bar thay vì line
+const monthCtx = document.getElementById('monthChart').getContext('2d');
+const monthChart = new Chart(monthCtx, {
+    type: 'bar',
+    data: {
+        labels: {!! json_encode($incidentsByMonth->pluck('month')) !!},
+        datasets: [{
+            label: 'Số sự cố',
+            data: {!! json_encode($incidentsByMonth->pluck('count')) !!},
+            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            borderRadius: 5
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 11
+                    }
                 }
             }
         }

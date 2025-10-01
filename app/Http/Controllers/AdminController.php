@@ -61,12 +61,6 @@ class AdminController extends Controller
             ->limit(10)
             ->get();
 
-        // Incidents gần đây nhất
-        $recentIncidents = Incident::with('user')
-            ->latest()
-            ->limit(10)
-            ->get();
-
         return view('admin.dashboard', compact(
             'totalIncidents',
             'totalUsers',
@@ -75,8 +69,7 @@ class AdminController extends Controller
             'monthlyIncidents',
             'dailyIncidents',
             'incidentsByLocation',
-            'incidentsByUser',
-            'recentIncidents'
+            'incidentsByUser'
         ));
     }
 
