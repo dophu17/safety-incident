@@ -101,7 +101,7 @@ class IncidentController extends Controller
             'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
-        return redirect()->route('admin.incidents.show', $incident)->with('status', 'Cập nhật sự cố thành công');
+        return redirect()->route('admin.incidents.show', $incident)->with('status', __('admin.Incident Updated'));
     }
 
     /**
@@ -111,7 +111,7 @@ class IncidentController extends Controller
     {
         $this->authorize('delete', $incident);
         $incident->delete();
-        return redirect()->route('admin.incidents.index')->with('status', 'Xóa sự cố thành công');
+        return redirect()->route('admin.incidents.index')->with('status', __('admin.Incident Deleted'));
     }
 
     /**
@@ -135,6 +135,6 @@ class IncidentController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('status', 'Status updated successfully');
+        return redirect()->back()->with('status', __('admin.Status Updated'));
     }
 }

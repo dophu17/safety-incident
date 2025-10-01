@@ -42,7 +42,7 @@
                     <div class="form-check mb-4">
                         <input class="form-check-input" type="checkbox" name="remember" id="remember">
                         <label class="form-check-label" for="remember">
-                            {{ __('Remember me') }}
+                            {{ __('auth.Remember Me') }}
                         </label>
                     </div>
                     
@@ -53,9 +53,9 @@
 
                 <div class="text-center">
                     <p class="mb-0 text-muted">
-                        {{ __('Don\'t have an account?') }}
+                        {{ __('auth.Don\'t have an account?') }}
                         <a href="{{ route('register') }}" class="text-decoration-none fw-semibold">
-                            {{ __('Create one here') }}
+                            {{ __('auth.Sign up here') }}
                         </a>
                     </p>
                 </div>

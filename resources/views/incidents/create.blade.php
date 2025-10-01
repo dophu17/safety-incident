@@ -92,15 +92,15 @@
                                 <span>
                                     <i class="bi bi-file-text me-1"></i>{{ __('Detailed Description') }} <span class="text-danger">*</span>
                                     <span class="badge bg-gradient text-white ms-2" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                                        <i class="bi bi-robot me-1"></i>AI sẽ phân tích
+                                        <i class="bi bi-robot me-1"></i>{{ __('admin.AI will analyze') }}
                                     </span>
                                 </span>
                                 <button type="button" class="btn btn-sm btn-outline-success" onclick="fillTemplate()">
-                                    <i class="bi bi-lightning-fill me-1"></i>Điền mẫu nhanh
+                                    <i class="bi bi-lightning-fill me-1"></i>{{ __('admin.Quick Fill') }}
                                 </button>
                             </label>
                             <textarea id="contentTextarea" name="content" rows="8" class="form-control @error('content') is-invalid @enderror" style="resize: vertical; overflow-y: auto;"
-                                      placeholder="Nhập mô tả chi tiết...">{{ old('content') }}</textarea>
+                                      placeholder="{{ __('Provide detailed information about what happened, when, and any contributing factors') }}">{{ old('content') }}</textarea>
                             @error('content')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -110,26 +110,26 @@
                                     <div class="d-flex align-items-start">
                                         <i class="bi bi-lightbulb-fill text-warning me-2" style="font-size: 1.2rem;"></i>
                                         <div>
-                                            <strong class="text-primary">Hướng dẫn nhập để AI phân tích tốt nhất:</strong>
+                                            <strong class="text-primary">{{ __('admin.How to input for best AI analysis:') }}</strong>
                                             <div class="row mt-2">
                                                 <div class="col-md-6">
                                                     <ul class="mb-0 small">
-                                                        <li class="mb-1">📍 <strong>Diễn biến:</strong> Mô tả chi tiết sự cố</li>
-                                                        <li class="mb-1">⚙️ <strong>Thiết bị:</strong> Tên máy, model, tình trạng</li>
-                                                        <li class="mb-1">👥 <strong>Người liên quan:</strong> Số người, ai chứng kiến</li>
+                                                        <li class="mb-1">{{ __('admin.Incident Progress:') }} <strong>{{ __('admin.Detail the incident') }}</strong></li>
+                                                        <li class="mb-1">{{ __('admin.Equipment:') }} <strong>{{ __('admin.Machine name, model, condition') }}</strong></li>
+                                                        <li class="mb-1">{{ __('admin.People Involved:') }} <strong>{{ __('admin.Number of people, witnesses') }}</strong></li>
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <ul class="mb-0 small">
-                                                        <li class="mb-1">💥 <strong>Nguyên nhân:</strong> Nguyên nhân có thể</li>
-                                                        <li class="mb-1">🩹 <strong>Hậu quả:</strong> Thương tích, thiệt hại</li>
-                                                        <li class="mb-1">🔧 <strong>Đã xử lý:</strong> Biện pháp ban đầu</li>
+                                                        <li class="mb-1">{{ __('admin.Cause:') }} <strong>{{ __('admin.Possible causes') }}</strong></li>
+                                                        <li class="mb-1">{{ __('admin.Consequences:') }} <strong>{{ __('admin.Injuries, damage') }}</strong></li>
+                                                        <li class="mb-1">{{ __('admin.Actions Taken:') }} <strong>{{ __('admin.Initial measures') }}</strong></li>
                                                     </ul>
                                                 </div>
                                             </div>
                                             <div class="alert alert-warning mb-0 mt-2 py-2 px-3 small">
                                                 <i class="bi bi-robot me-1"></i>
-                                                <strong>AI sẽ phân tích:</strong> Mức độ rủi ro, nguyên nhân gốc rễ, giải pháp khắc phục, và dự đoán sự cố tương tự
+                                                <strong>{{ __('admin.AI will analyze:') }}</strong> {{ __('admin.Risk level, root causes, solutions, and predict similar incidents') }}
                                             </div>
                                         </div>
                                     </div>

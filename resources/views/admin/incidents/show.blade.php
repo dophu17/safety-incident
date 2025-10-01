@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Chi tiết sự cố')
-@section('page-title', 'Chi tiết sự cố #' . $incident->id)
+@section('title', __('admin.Incident Details') . ' #' . $incident->id)
+@section('page-title', __('admin.Incident Details') . ' #' . $incident->id)
 
 @section('content')
 <div class="row">
@@ -16,14 +16,14 @@
                     </h5>
                     <div class="d-flex gap-2">
                         <a href="{{ route('admin.incidents.edit', $incident) }}" class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit me-1"></i>Sửa
+                            <i class="fas fa-edit me-1"></i>{{ __('Edit') }}
                         </a>
                         <form action="{{ route('incidents.destroy', $incident) }}" method="POST" class="d-inline" 
-                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa sự cố này?')">
+                              onsubmit="return confirm('{{ __('Are you sure you want to delete this incident?') }}')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash me-1"></i>Xóa
+                                <i class="fas fa-trash me-1"></i>{{ __('Delete') }}
                             </button>
                         </form>
                     </div>
@@ -35,27 +35,27 @@
                     @switch($incident->status ?? 'pending')
                         @case('pending')
                             <span class="badge bg-warning fs-6">
-                                <i class="fas fa-clock me-1"></i>Đang chờ xử lý
+                                <i class="fas fa-clock me-1"></i>{{ __('admin.Pending') }}
                             </span>
                             @break
                         @case('investigating')
                             <span class="badge bg-info fs-6">
-                                <i class="fas fa-search me-1"></i>Đang điều tra
+                                <i class="fas fa-search me-1"></i>{{ __('admin.In Progress') }}
                             </span>
                             @break
                         @case('resolved')
                             <span class="badge bg-success fs-6">
-                                <i class="fas fa-check-circle me-1"></i>Đã giải quyết
+                                <i class="fas fa-check-circle me-1"></i>{{ __('admin.Resolved') }}
                             </span>
                             @break
                         @case('closed')
                             <span class="badge bg-secondary fs-6">
-                                <i class="fas fa-times-circle me-1"></i>Đã đóng
+                                <i class="fas fa-times-circle me-1"></i>{{ __('admin.Closed') }}
                             </span>
                             @break
                         @default
                             <span class="badge bg-warning fs-6">
-                                <i class="fas fa-clock me-1"></i>Đang chờ xử lý
+                                <i class="fas fa-clock me-1"></i>{{ __('admin.Pending') }}
                             </span>
                     @endswitch
                 </div>
@@ -63,10 +63,10 @@
                 <!-- Incident Description -->
                 <div class="mb-4">
                     <h6 class="text-primary mb-3">
-                        <i class="fas fa-file-text me-2"></i>Mô tả chi tiết
+                        <i class="fas fa-file-text me-2"></i>{{ __('admin.Description') }}
                     </h6>
                     <div class="bg-light p-3 rounded">
-                        <p class="mb-0">{{ $incident->content }}</p>
+                        <p class="mb-0" style="white-space: pre-wrap;">{{ $incident->content }}</p>
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                 @if ($incident->images && count($incident->images) > 0)
                     <div class="mb-4">
                         <h6 class="text-primary mb-3">
-                            <i class="fas fa-camera me-2"></i>Hình ảnh minh chứng
+                            <i class="fas fa-camera me-2"></i>{{ __('admin.Evidence Photos') }}
                         </h6>
                         <div class="row g-3" id="imageGallery">
                             @foreach ($incident->images as $index => $img)
@@ -82,7 +82,7 @@
                                     <div class="card border-0 shadow-sm">
                                         <img class="card-img-top" 
                                              src="{{ asset('storage/' . $img) }}" 
-                                             alt="Incident image {{ $index + 1 }}"
+                                             alt="{{ __('Incident image') }} {{ $index + 1 }}"
                                              style="height: 200px; object-fit: cover; cursor: pointer;"
                                              onclick="openImageModal('{{ asset('storage/' . $img) }}')">
                                     </div>
@@ -95,17 +95,17 @@
                 <!-- Management Actions -->
                 <div class="border-top pt-4">
                     <h6 class="text-primary mb-3">
-                        <i class="fas fa-tasks me-2"></i>Quản lý trạng thái
+                        <i class="fas fa-tasks me-2"></i>{{ __('admin.Update Status') }}
                     </h6>
                     <div class="d-flex gap-2 flex-wrap">
                         <button class="btn btn-warning" onclick="updateStatus({{ $incident->id }}, 'investigating')">
-                            <i class="fas fa-search me-2"></i>Bắt đầu điều tra
+                            <i class="fas fa-search me-2"></i>{{ __('admin.In Progress') }}
                         </button>
                         <button class="btn btn-success" onclick="updateStatus({{ $incident->id }}, 'resolved')">
-                            <i class="fas fa-check-circle me-2"></i>Đánh dấu đã giải quyết
+                            <i class="fas fa-check-circle me-2"></i>{{ __('admin.Resolved') }}
                         </button>
                         <button class="btn btn-secondary" onclick="updateStatus({{ $incident->id }}, 'closed')">
-                            <i class="fas fa-times-circle me-2"></i>Đóng sự cố
+                            <i class="fas fa-times-circle me-2"></i>{{ __('admin.Closed') }}
                         </button>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-info text-white">
                 <h6 class="mb-0">
-                    <i class="fas fa-info-circle me-2"></i>Thông tin sự cố
+                    <i class="fas fa-info-circle me-2"></i>{{ __('admin.Incident Information') }}
                 </h6>
             </div>
             <div class="card-body">
@@ -128,49 +128,49 @@
                     <strong>#{{ $incident->id }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-user me-1"></i>Người báo cáo</small>
+                    <small class="text-muted d-block"><i class="fas fa-user me-1"></i>{{ __('admin.Reported By') }}</small>
                     <strong>{{ $incident->user?->name ?? 'Unknown' }}</strong>
                     <br><small class="text-muted">{{ $incident->user?->email }}</small>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-map-marker-alt me-1"></i>Vị trí</small>
+                    <small class="text-muted d-block"><i class="fas fa-map-marker-alt me-1"></i>{{ __('Location') }}</small>
                     <strong>{{ $incident->location }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-clock me-1"></i>Thời gian xảy ra</small>
+                    <small class="text-muted d-block"><i class="fas fa-clock me-1"></i>{{ __('admin.Occurred At') }}</small>
                     <strong>{{ $incident->occurred_at?->format('d/m/Y H:i') }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-calendar-plus me-1"></i>Ngày báo cáo</small>
+                    <small class="text-muted d-block"><i class="fas fa-calendar-plus me-1"></i>{{ __('admin.Reported At') }}</small>
                     <strong>{{ $incident->created_at?->format('d/m/Y H:i') }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-calendar-check me-1"></i>Cập nhật lần cuối</small>
+                    <small class="text-muted d-block"><i class="fas fa-calendar-check me-1"></i>{{ __('admin.Last Updated') }}</small>
                     <strong>{{ $incident->updated_at?->format('d/m/Y H:i') }}</strong>
                 </div>
                 <div class="mb-3">
-                    <small class="text-muted d-block"><i class="fas fa-exclamation-triangle me-1"></i>Mức độ</small>
+                    <small class="text-muted d-block"><i class="fas fa-exclamation-triangle me-1"></i>{{ __('admin.Severity') }}</small>
                     @switch($incident->severity ?? 'low')
                         @case('low')
-                            <span class="badge bg-info">Thấp</span>
+                            <span class="badge bg-info">{{ __('Low') }}</span>
                             @break
                         @case('medium')
-                            <span class="badge bg-warning">Trung bình</span>
+                            <span class="badge bg-warning">{{ __('Medium') }}</span>
                             @break
                         @case('high')
-                            <span class="badge bg-danger">Cao</span>
+                            <span class="badge bg-danger">{{ __('High') }}</span>
                             @break
                         @case('critical')
-                            <span class="badge bg-dark">Rất nghiêm trọng</span>
+                            <span class="badge bg-dark">{{ __('Critical') }}</span>
                             @break
                     @endswitch
                 </div>
                 <div class="mb-0">
-                    <small class="text-muted d-block"><i class="fas fa-bolt me-1"></i>Hành động khẩn cấp</small>
+                    <small class="text-muted d-block"><i class="fas fa-bolt me-1"></i>{{ __('admin.Immediate Action') }}</small>
                     @if($incident->immediate_action === 'yes')
-                        <span class="badge bg-danger">Cần ngay</span>
+                        <span class="badge bg-danger">{{ __('admin.Required') }}</span>
                     @else
-                        <span class="badge bg-secondary">Không cần</span>
+                        <span class="badge bg-secondary">{{ __('admin.Not Required') }}</span>
                     @endif
                 </div>
             </div>
@@ -180,19 +180,19 @@
         <div class="card shadow-sm">
             <div class="card-header bg-success text-white">
                 <h6 class="mb-0">
-                    <i class="fas fa-bolt me-2"></i>Hành động nhanh
+                    <i class="fas fa-bolt me-2"></i>{{ __('admin.Actions') }}
                 </h6>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="{{ route('admin.incidents.index') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-list me-2"></i>Danh sách sự cố
+                        <i class="fas fa-list me-2"></i>{{ __('admin.All Incidents') }}
                     </a>
                     <a href="{{ route('admin.incidents.edit', $incident) }}" class="btn btn-outline-warning">
-                        <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                        <i class="fas fa-edit me-2"></i>{{ __('Edit') }}
                     </a>
                     <button class="btn btn-outline-secondary" onclick="window.print()">
-                        <i class="fas fa-print me-2"></i>In báo cáo
+                        <i class="fas fa-print me-2"></i>{{ __('admin.Export Data') }}
                     </button>
                 </div>
             </div>
@@ -205,11 +205,11 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Hình ảnh minh chứng</h5>
+                <h5 class="modal-title">{{ __('admin.Evidence Photos') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
-                <img id="modalImage" src="" class="img-fluid rounded" alt="Incident image">
+                <img id="modalImage" src="" class="img-fluid rounded" alt="{{ __('Incident image') }}">
             </div>
         </div>
     </div>
@@ -224,7 +224,7 @@ function openImageModal(imageSrc) {
 }
 
 function updateStatus(incidentId, newStatus) {
-    if (!confirm('Bạn có chắc chắn muốn cập nhật trạng thái?')) {
+    if (!confirm("{{ __('Are you sure you want to update the status?') }}")) {
         return;
     }
 
@@ -244,14 +244,13 @@ function updateStatus(incidentId, newStatus) {
         if (data.success) {
             location.reload();
         } else {
-            alert('Lỗi khi cập nhật trạng thái');
+            alert("{{ __('admin.Status Updated') }}");
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Lỗi khi cập nhật trạng thái');
+        alert("{{ __('Error!') }}");
     });
 }
 </script>
 @endsection
-
