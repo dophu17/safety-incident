@@ -20,7 +20,7 @@
                     <div class="mb-3">
                         <label class="form-label">{{ __('Full Name') }} <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
-                               value="{{ old('name') }}" required autofocus>
+                               value="{{ old('name') }}" autofocus>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -29,7 +29,7 @@
                     <div class="mb-3">
                         <label class="form-label">{{ __('Email') }} <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
-                               value="{{ old('email') }}" required>
+                               value="{{ old('email') }}">
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

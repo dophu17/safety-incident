@@ -48,14 +48,19 @@
                         </div>
                         
                         <div class="col-md-12 mb-3">
-                            <label class="form-label">
-                                Mô tả chi tiết <span class="text-danger">*</span>
-                                <span class="badge bg-primary ms-2">
-                                    <i class="fas fa-robot me-1"></i>AI sẽ phân tích
+                            <label class="form-label d-flex justify-content-between align-items-center">
+                                <span>
+                                    Mô tả chi tiết <span class="text-danger">*</span>
+                                    <span class="badge bg-primary ms-2">
+                                        <i class="fas fa-robot me-1"></i>AI sẽ phân tích
+                                    </span>
                                 </span>
+                                <button type="button" class="btn btn-sm btn-outline-success" onclick="fillTemplate()">
+                                    <i class="fas fa-bolt me-1"></i>Điền mẫu nhanh
+                                </button>
                             </label>
-                            <textarea name="content" rows="8" class="form-control @error('content') is-invalid @enderror" style="resize: vertical; overflow-y: auto;"
-                                      placeholder="Nhập mô tả chi tiết...&#10;&#10;Ví dụ:&#10;- Diễn biến: Máy CNC-05 dừng đột ngột lúc 14:30...&#10;- Thiết bị: CNC FANUC Series 30i, 5 năm tuổi...&#10;- Người liên quan: 2 công nhân đang vận hành...&#10;- Nguyên nhân: Nghi do quá nhiệt...&#10;- Hậu quả: Dừng sản xuất 2 giờ...&#10;- Đã xử lý: Tắt nguồn điện, gọi bảo trì...">{{ old('content') }}</textarea>
+                            <textarea id="contentTextarea" name="content" rows="8" class="form-control @error('content') is-invalid @enderror" style="resize: vertical; overflow-y: auto;"
+                                      placeholder="Nhập mô tả chi tiết...">{{ old('content') }}</textarea>
                             
                             <div class="card border-primary mt-2">
                                 <div class="card-body p-3 bg-light">
@@ -233,6 +238,42 @@ function previewImages(input) {
     }
 }
 
+// Fill template function
+function fillTemplate() {
+    const template = `📍 Diễn biến sự cố:
+Máy CNC-05 dừng đột ngột lúc 14:30 ngày [điền ngày]. Trước đó có tiếng kêu bất thường và mùi cháy nhẹ.
+
+⚙️ Thiết bị liên quan:
+- Tên thiết bị: [Ví dụ: Máy CNC FANUC Series 30i]
+- Năm sử dụng: [Ví dụ: 5 năm]
+- Tình trạng: [Ví dụ: Đang hoạt động bình thường trước khi xảy ra sự cố]
+
+👥 Người liên quan:
+- Số người ảnh hưởng: [Ví dụ: 2 công nhân]
+- Người chứng kiến: [Ví dụ: 1 kỹ sư, 3 công nhân khác]
+
+💥 Nguyên nhân (dự đoán):
+[Ví dụ: Nghi ngờ do hệ thống làm mát bị hỏng, quạt làm mát không hoạt động]
+
+🩹 Hậu quả:
+- Thương tích: [Ví dụ: Không có thương tích]
+- Thiệt hại tài sản: [Ví dụ: Chưa đánh giá, ước tính 5-10 triệu]
+- Gián đoạn công việc: [Ví dụ: Dừng dây chuyền sản xuất 2 giờ]
+
+🔧 Biện pháp đã thực hiện:
+- Tắt nguồn điện máy ngay lập tức
+- Cách ly khu vực để đảm bảo an toàn
+- Thông báo cho bộ phận bảo trì
+- [Các biện pháp khác...]`;
+
+    const textarea = document.getElementById('contentTextarea');
+    if (confirm('Điền mẫu nhanh sẽ thay thế nội dung hiện tại. Bạn có chắc chắn?')) {
+        textarea.value = template;
+        textarea.focus();
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
 // Set default occurred_at to current time
 document.addEventListener('DOMContentLoaded', function() {
     const now = new Date();
@@ -241,4 +282,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
 
