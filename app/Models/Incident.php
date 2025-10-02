@@ -12,11 +12,14 @@ class Incident extends Model
 
     protected $fillable = [
         'user_id',
+        'company_id',
         'title',
         'content',
         'location',
         'occurred_at',
         'status',
+        'severity',
+        'immediate_action',
         'images',
     ];
 
@@ -31,5 +34,10 @@ class Incident extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 }

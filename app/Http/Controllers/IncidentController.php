@@ -6,26 +6,11 @@ use App\Models\Incident;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class IncidentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $query = Incident::with('user')->latest();
-
-        if (request()->routeIs('incidents.index')) {
-            // Public feed: show all incidents
-            $incidents = $query->paginate(10);
-        } else {
-            // Admin index: same for now, could filter
-            $incidents = $query->paginate(20);
-        }
-
-        return view('incidents.index', compact('incidents'));
-    }
+    use AuthorizesRequests;
 
     /**
      * Show the form for creating a new resource.
@@ -42,9 +27,11 @@ class IncidentController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'occurred_at' => ['nullable', 'date'],
+            'content' => ['required', 'string'],
+            'location' => ['required', 'string', 'max:255'],
+            'occurred_at' => ['required', 'date'],
+            'severity' => ['nullable', 'in:low,medium,high,critical'],
+            'immediate_action' => ['nullable', 'in:no,yes'],
             'images.*' => ['nullable', 'image', 'max:5120'],
         ]);
 
@@ -57,31 +44,18 @@ class IncidentController extends Controller
 
         $incident = Incident::create([
             'user_id' => Auth::id(),
+            'company_id' => Auth::user()->company_id,
             'title' => $validated['title'],
             'content' => $validated['content'] ?? null,
             'location' => $validated['location'] ?? null,
             'occurred_at' => $validated['occurred_at'] ?? null,
-            'images' => $imagePaths,
+            'severity' => $validated['severity'] ?? 'low',
+            'immediate_action' => $validated['immediate_action'] ?? 'no',
+            'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
-        return redirect()->route('incidents.show', $incident)->with('status', 'created');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Incident $incident)
-    {
-        return view('incidents.show', compact('incident'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Incident $incident)
-    {
-        $this->authorize('update', $incident);
-        return view('incidents.edit', compact('incident'));
+        // Redirect back to create page with success message
+        return redirect()->route('incidents.create')->with('success', __('messages.Incident reported successfully. Thank you for your report!'));
     }
 
     /**
@@ -93,13 +67,24 @@ class IncidentController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'occurred_at' => ['nullable', 'date'],
+            'content' => ['required', 'string'],
+            'location' => ['required', 'string', 'max:255'],
+            'occurred_at' => ['required', 'date'],
+            'severity' => ['nullable', 'in:low,medium,high,critical'],
+            'immediate_action' => ['nullable', 'in:no,yes'],
             'images.*' => ['nullable', 'image', 'max:5120'],
+            'delete_images' => ['nullable', 'array'],
         ]);
 
+        // Get current images or empty array
         $imagePaths = $incident->images ?? [];
+
+        // Remove deleted images
+        if ($request->has('delete_images')) {
+            $imagePaths = array_values(array_diff($imagePaths, $request->delete_images));
+        }
+
+        // Add new images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $imagePaths[] = $image->store('incidents', 'public');
@@ -111,10 +96,12 @@ class IncidentController extends Controller
             'content' => $validated['content'] ?? null,
             'location' => $validated['location'] ?? null,
             'occurred_at' => $validated['occurred_at'] ?? null,
-            'images' => $imagePaths,
+            'severity' => $validated['severity'] ?? 'low',
+            'immediate_action' => $validated['immediate_action'] ?? 'no',
+            'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
-        return redirect()->route('incidents.show', $incident)->with('status', 'updated');
+        return redirect()->route('admin.incidents.show', $incident)->with('status', __('admin.Incident Updated'));
     }
 
     /**
@@ -124,6 +111,30 @@ class IncidentController extends Controller
     {
         $this->authorize('delete', $incident);
         $incident->delete();
-        return redirect()->route('incidents.index')->with('status', 'deleted');
+        return redirect()->route('admin.incidents.index')->with('status', __('admin.Incident Deleted'));
+    }
+
+    /**
+     * Update the status of the incident.
+     */
+    public function updateStatus(Request $request, Incident $incident)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,investigating,resolved,closed'],
+        ]);
+
+        $incident->update([
+            'status' => $validated['status'],
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => __('admin.Status Updated'),
+                'status' => $incident->status,
+            ]);
+        }
+
+        return redirect()->back()->with('status', __('admin.Status Updated'));
     }
 }

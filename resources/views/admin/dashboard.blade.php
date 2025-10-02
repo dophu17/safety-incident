@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Admin Dashboard')
-@section('page-title', 'Tổng quan hệ thống')
+@section('title', __('admin.Dashboard'))
+@section('page-title', __('admin.Overview Statistics'))
 
 @section('content')
 <!-- Statistics Cards -->
@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalIncidents) }}</h3>
-                    <p class="text-muted mb-0">Tổng sự cố</p>
+                    <p class="text-muted mb-0">{{ __('admin.Total Incidents') }}</p>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalUsers) }}</h3>
-                    <p class="text-muted mb-0">Tổng người dùng</p>
+                    <p class="text-muted mb-0">{{ __('admin.Total Employees') }}</p>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalManagers) }}</h3>
-                    <p class="text-muted mb-0">Quản lý</p>
+                    <p class="text-muted mb-0">{{ __('admin.Managers') }}</p>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                 </div>
                 <div>
                     <h3 class="mb-0">{{ number_format($totalEmployees) }}</h3>
-                    <p class="text-muted mb-0">Nhân viên</p>
+                    <p class="text-muted mb-0">{{ __('admin.Employees') }}</p>
                 </div>
             </div>
         </div>
@@ -65,123 +65,71 @@
 
 <div class="row">
     <!-- Monthly Incidents Chart -->
-    <div class="col-lg-8 mb-4">
+    <div class="col-lg-6 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo tháng (6 tháng gần nhất)</h5>
-            <canvas id="monthlyChart" height="100"></canvas>
+            <h5 class="mb-3">{{ __('admin.Monthly Incident Trend') }}</h5>
+            <div style="height: 250px;">
+                <canvas id="monthlyChart"></canvas>
+            </div>
         </div>
     </div>
     
     <!-- Incidents by Location -->
-    <div class="col-lg-4 mb-4">
+    <div class="col-lg-6 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo vị trí (Top 10)</h5>
-            <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Vị trí</th>
-                            <th>Số lượng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($incidentsByLocation as $location)
-                        <tr>
-                            <td>{{ $location->location ?: 'Không xác định' }}</td>
-                            <td><span class="badge bg-primary">{{ $location->count }}</span></td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="2" class="text-center text-muted">Không có dữ liệu</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <h5 class="mb-3">{{ __('admin.Incidents by Location') }}</h5>
+            <div style="height: 250px;">
+                <canvas id="locationChart"></canvas>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <!-- Daily Incidents Chart -->
-    <div class="col-lg-6 mb-4">
-        <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo ngày (30 ngày gần nhất)</h5>
-            <canvas id="dailyChart" height="100"></canvas>
-        </div>
-    </div>
-    
     <!-- Incidents by User -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-lg-12 mb-4">
         <div class="chart-container">
-            <h5 class="mb-3">Sự cố theo người dùng (Top 10)</h5>
+            <h5 class="mb-3">{{ __('admin.User Statistics') }}</h5>
             <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
+                <table class="table table-sm table-hover">
+                    <thead class="table-light">
                         <tr>
-                            <th>Người dùng</th>
-                            <th>Số lượng</th>
+                            <th width="60">#</th>
+                            <th>{{ __('admin.User') }}</th>
+                            <th width="120" class="text-center">{{ __('admin.Incidents') }}</th>
+                            <th>{{ __('admin.Statistics') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($incidentsByUser as $userIncident)
+                        @php $maxCount = $incidentsByUser->max('count') ?? 1; @endphp
+                        @forelse($incidentsByUser as $index => $userIncident)
                         <tr>
-                            <td>{{ $userIncident->user->name }}</td>
-                            <td><span class="badge bg-success">{{ $userIncident->count }}</span></td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="2" class="text-center text-muted">Không có dữ liệu</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Incidents -->
-<div class="row">
-    <div class="col-12">
-        <div class="chart-container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Sự cố gần đây nhất</h5>
-                <a href="{{ route('admin.incidents.index') }}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tiêu đề</th>
-                            <th>Vị trí</th>
-                            <th>Người báo cáo</th>
-                            <th>Thời gian</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($recentIncidents as $incident)
-                        <tr>
-                            <td>#{{ $incident->id }}</td>
+                            <td>{{ $index + 1 }}</td>
                             <td>
-                                <a href="{{ route('incidents.show', $incident) }}" class="text-decoration-none">
-                                    {{ Str::limit($incident->title, 50) }}
-                                </a>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; font-size: 14px;">
+                                        {{ substr($userIncident->user->name, 0, 1) }}
+                                    </div>
+                                    <span>{{ $userIncident->user->name }}</span>
+                                </div>
                             </td>
-                            <td>{{ $incident->location ?: 'Không xác định' }}</td>
-                            <td>{{ $incident->user->name }}</td>
-                            <td>{{ $incident->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-success fs-6">{{ $userIncident->count }}</span>
+                            </td>
                             <td>
-                                <a href="{{ route('incidents.show', $incident) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ ($userIncident->count / $maxCount) * 100 }}%" 
+                                         aria-valuenow="{{ $userIncident->count }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="{{ $maxCount }}">
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">Không có sự cố nào</td>
+                            <td colspan="4" class="text-center text-muted py-4">{{ __('admin.No incidents found.') }}</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -194,57 +142,103 @@
 
 @section('scripts')
 <script>
-// Monthly Chart
+// Monthly Chart - Đơn giản dạng bar
 const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
 const monthlyChart = new Chart(monthlyCtx, {
-    type: 'line',
+    type: 'bar',
     data: {
         labels: {!! json_encode($monthlyIncidents->pluck('month')) !!},
         datasets: [{
             label: 'Số sự cố',
             data: {!! json_encode($monthlyIncidents->pluck('count')) !!},
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.1,
-            fill: true
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 206, 86, 0.8)',
+                'rgba(153, 102, 255, 0.8)',
+                'rgba(255, 159, 64, 0.8)',
+                'rgba(255, 99, 132, 0.8)'
+            ],
+            borderColor: [
+                'rgba(75, 192, 192, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 2,
+            borderRadius: 5
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
         scales: {
             y: {
                 beginAtZero: true,
                 ticks: {
-                    stepSize: 1
+                    stepSize: 1,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 11
+                    }
                 }
             }
         }
     }
 });
 
-// Daily Chart
-const dailyCtx = document.getElementById('dailyChart').getContext('2d');
-const dailyChart = new Chart(dailyCtx, {
+// Location Chart - Dạng horizontal bar
+const locationCtx = document.getElementById('locationChart').getContext('2d');
+const locationChart = new Chart(locationCtx, {
     type: 'bar',
     data: {
-        labels: {!! json_encode($dailyIncidents->pluck('date')) !!},
+        labels: {!! json_encode($incidentsByLocation->take(5)->pluck('location')) !!},
         datasets: [{
             label: 'Số sự cố',
-            data: {!! json_encode($dailyIncidents->pluck('count')) !!},
-            backgroundColor: 'rgba(54, 162, 235, 0.8)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
+            data: {!! json_encode($incidentsByLocation->take(5)->pluck('count')) !!},
+            backgroundColor: 'rgba(255, 99, 132, 0.8)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            borderRadius: 5
         }]
     },
     options: {
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
         scales: {
-            y: {
+            x: {
                 beginAtZero: true,
                 ticks: {
-                    stepSize: 1
+                    stepSize: 1,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            y: {
+                ticks: {
+                    font: {
+                        size: 11
+                    }
                 }
             }
         }
@@ -252,3 +246,4 @@ const dailyChart = new Chart(dailyCtx, {
 });
 </script>
 @endsection
+

@@ -67,6 +67,64 @@
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        .dropdown-item.active {
+            background-color: #667eea;
+            color: white;
+        }
+        .dropdown-item:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        /* Pagination Styling */
+        .pagination {
+            margin-bottom: 0;
+        }
+        .page-link {
+            color: #667eea;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .page-link:hover {
+            color: #764ba2;
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+        }
+        .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+        /* Action Buttons Spacing */
+        .btn-sm {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-sm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+        .btn-outline-warning:hover {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
     </style>
 </head>
 <body class="font-sans antialiased">
@@ -83,30 +141,34 @@
                     <nav class="nav flex-column">
                         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <i class="fas fa-tachometer-alt me-2"></i>
-                            Dashboard
-                        </a>
-                        <a href="{{ route('admin.incidents.index') }}" class="nav-link {{ request()->routeIs('admin.incidents.*') ? 'active' : '' }}">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Quản lý sự cố
-                        </a>
-                        <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                            <i class="fas fa-users me-2"></i>
-                            Quản lý người dùng
+                            {{ __('admin.Dashboard') }}
                         </a>
                         <a href="{{ route('admin.statistics') }}" class="nav-link {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
                             <i class="fas fa-chart-bar me-2"></i>
-                            Thống kê chi tiết
+                            {{ __('admin.Detailed Statistics') }}
+                        </a>
+                        <a href="{{ route('admin.company') }}" class="nav-link {{ request()->routeIs('admin.company') ? 'active' : '' }}">
+                            <i class="fas fa-building me-2"></i>
+                            {{ __('admin.Company Information') }}
+                        </a>
+                        <a href="{{ route('admin.incidents.index') }}" class="nav-link {{ request()->routeIs('admin.incidents.*') ? 'active' : '' }}">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {{ __('admin.Incident Management') }}
+                        </a>
+                        <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                            <i class="fas fa-users me-2"></i>
+                            {{ __('admin.User Management') }}
                         </a>
                         <hr class="text-white-50">
-                        <a href="{{ route('incidents.index') }}" class="nav-link">
+                        <a href="{{ url('/') }}" class="nav-link">
                             <i class="fas fa-home me-2"></i>
-                            Về trang chủ
+                            {{ __('messages.Go Home') }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}" class="d-inline">
                             @csrf
                             <button type="submit" class="nav-link w-100 text-start border-0 bg-transparent">
                                 <i class="fas fa-sign-out-alt me-2"></i>
-                                Đăng xuất
+                                {{ __('messages.Logout') }}
                             </button>
                         </form>
                     </nav>
@@ -119,23 +181,29 @@
                     <!-- Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="mb-0">@yield('page-title', 'Dashboard')</h2>
-                        <div class="d-flex align-items-center">
-                            <span class="text-muted me-3">Xin chào, {{ Auth::user()->name }}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-muted me-2">{{ Auth::user()->name }}</span>
+                            
+                            <!-- Language Dropdown -->
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-circle"></i>
+                                    <i class="fas fa-globe me-1"></i>
+                                    @if(app()->getLocale() == 'ja')
+                                        日本語
+                                    @else
+                                        Tiếng Việt
+                                    @endif
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
-                                    <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item d-flex align-items-center {{ app()->getLocale() == 'vn' ? 'active' : '' }}" href="{{ route('language.switch', 'vn') }}">
+                                            <span class="me-2">🇻🇳</span>Tiếng Việt
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center {{ app()->getLocale() == 'ja' ? 'active' : '' }}" href="{{ route('language.switch', 'ja') }}">
+                                            <span class="me-2">🇯🇵</span>日本語
+                                        </a>
                                     </li>
                                 </ul>
                             </div>

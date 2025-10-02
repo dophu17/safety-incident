@@ -32,23 +32,72 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Language Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-globe me-1"></i>
+                            @if(app()->getLocale() == 'ja')
+                                日本語
+                            @else
+                                Tiếng Việt
+                            @endif
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center {{ app()->getLocale() == 'vn' ? 'active' : '' }}" href="{{ route('language.switch', 'vn') }}">
+                                    <span class="me-2">🇻🇳</span>Tiếng Việt
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center {{ app()->getLocale() == 'ja' ? 'active' : '' }}" href="{{ route('language.switch', 'ja') }}">
+                                    <span class="me-2">🇯🇵</span>日本語
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
                     @if (Route::has('login'))
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('/dashboard') }}">
-                                    <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                @if(auth()->user()->role === 'manager')
+                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-speedometer2 me-1"></i>{{ __('messages.Dashboard') }}
+                                    </a>
+                                @endif
+                            </li>
+                            <li class="nav-item">
+                                @if(auth()->user()->role === 'employee')
+                                    <a class="nav-link" href="{{ route('incidents.create') }}">
+                                        <i class="bi bi-plus-circle me-1"></i>{{ __('messages.Report Incident') }}
+                                    </a>
+                                @endif
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    {{ auth()->user()->name }}
                                 </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="post" class="d-inline">
+                                            @csrf
+                                            <button class="dropdown-item" type="submit">
+                                                <i class="bi bi-box-arrow-right me-2"></i>{{ __('messages.Logout') }}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">
-                                    <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>{{ __('messages.Login') }}
                                 </a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="btn btn-primary" href="{{ route('register') }}">
-                                        <i class="bi bi-person-plus me-1"></i>Đăng ký
+                                        <i class="bi bi-person-plus me-1"></i>{{ __('messages.Register') }}
                                     </a>
                                 </li>
                             @endif
@@ -65,26 +114,31 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 hero-content">
                     <h1 class="display-4 fw-bold mb-4">
-                        Quản lý rủi ro thông minh với
+                        {{ __('messages.Smart Risk Management with') }}
                         <span class="text-warning">AI</span>
                     </h1>
                     <p class="lead mb-4">
-                        Hệ thống quản lý sự cố và rủi ro doanh nghiệp được tích hợp trí tuệ nhân tạo, 
-                        giúp dự đoán, phòng ngừa và xử lý các tình huống khẩn cấp một cách hiệu quả.
+                        {{ __('messages.AI-powered enterprise incident and risk management system') }}
                     </p>
                     <div class="d-flex flex-wrap gap-3">
             @if (Route::has('login'))
                     @auth
-                                <a href="{{ url('/dashboard') }}" class="btn btn-warning btn-custom">
-                                    <i class="bi bi-speedometer2 me-2"></i>Truy cập Dashboard
-                        </a>
+                        @if(auth()->user()->role === 'manager')
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-warning btn-custom">
+                                <i class="bi bi-speedometer2 me-2"></i>{{ __('messages.Access Dashboard') }}
+                            </a>
+                        @else
+                            <a href="{{ route('incidents.create') }}" class="btn btn-warning btn-custom">
+                                <i class="bi bi-plus-circle me-2"></i>{{ __('messages.Report Risk') }}
+                            </a>
+                        @endif
                     @else
                                 <a href="{{ route('login') }}" class="btn btn-warning btn-custom">
-                                    <i class="bi bi-play-circle me-2"></i>Bắt đầu ngay
+                                    <i class="bi bi-play-circle me-2"></i>{{ __('messages.Get Started') }}
                                 </a>
                                 @if (Route::has('register'))
                                     <a href="{{ route('register') }}" class="btn btn-outline-light btn-custom">
-                                        <i class="bi bi-person-plus me-2"></i>Đăng ký miễn phí
+                                        <i class="bi bi-person-plus me-2"></i>{{ __('messages.Free Registration') }}
                                     </a>
                                 @endif
                             @endauth
@@ -106,19 +160,19 @@
             <div class="row text-center">
                 <div class="col-md-3 col-6 mb-4">
                     <div class="stats-counter">1000+</div>
-                    <p class="text-secondary-custom">Doanh nghiệp tin tưởng</p>
+                    <p class="text-secondary-custom">{{ __('messages.Trusted businesses') }}</p>
                 </div>
                 <div class="col-md-3 col-6 mb-4">
                     <div class="stats-counter">99.9%</div>
-                    <p class="text-secondary-custom">Độ chính xác AI</p>
+                    <p class="text-secondary-custom">{{ __('messages.AI Accuracy') }}</p>
                 </div>
                 <div class="col-md-3 col-6 mb-4">
                     <div class="stats-counter">24/7</div>
-                    <p class="text-secondary-custom">Giám sát liên tục</p>
+                    <p class="text-secondary-custom">{{ __('messages.Continuous Monitoring') }}</p>
                 </div>
                 <div class="col-md-3 col-6 mb-4">
                     <div class="stats-counter">50+</div>
-                    <p class="text-secondary-custom">Tính năng nâng cao</p>
+                    <p class="text-secondary-custom">{{ __('messages.Advanced Features') }}</p>
                 </div>
             </div>
         </div>
@@ -129,9 +183,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center mb-5 section-header">
-                    <h2 class="display-5 fw-bold mb-3">Tính năng nổi bật</h2>
+                    <h2 class="display-5 fw-bold mb-3">{{ __('messages.Outstanding Features') }}</h2>
                     <p class="lead">
-                        Công nghệ AI tiên tiến giúp doanh nghiệp quản lý rủi ro một cách toàn diện và hiệu quả
+                        {{ __('messages.Advanced AI technology helps businesses manage risks comprehensively and effectively') }}
                     </p>
                 </div>
             </div>
@@ -144,9 +198,9 @@
                             <div class="feature-icon bg-primary mx-auto">
                                 <i class="bi bi-lightbulb"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Dự đoán rủi ro bằng AI</h5>
+                            <h5 class="card-title fw-bold">{{ __('messages.AI Risk Prediction') }}</h5>
                             <p class="card-text">
-                                Sử dụng machine learning để phân tích dữ liệu và dự đoán các rủi ro tiềm ẩn trước khi chúng xảy ra.
+                                {{ __('messages.Use machine learning to analyze data and predict potential risks before they occur.') }}
                             </p>
                         </div>
                     </div>
@@ -159,9 +213,9 @@
                             <div class="feature-icon bg-success mx-auto">
                                 <i class="bi bi-exclamation-triangle"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Cảnh báo thời gian thực</h5>
+                            <h5 class="card-title fw-bold">{{ __('messages.Real-time Alerts') }}</h5>
                             <p class="card-text">
-                                Hệ thống giám sát 24/7 với thông báo tức thì qua email, SMS và ứng dụng di động.
+                                {{ __('messages.24/7 monitoring system with instant notifications via email, SMS and mobile app.') }}
                             </p>
                         </div>
                     </div>
@@ -174,9 +228,9 @@
                             <div class="feature-icon bg-info mx-auto">
                                 <i class="bi bi-graph-up"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Báo cáo thông minh</h5>
+                            <h5 class="card-title fw-bold">{{ __('messages.Smart Reports') }}</h5>
                             <p class="card-text">
-                                Tự động tạo báo cáo chi tiết với biểu đồ trực quan và phân tích xu hướng rủi ro.
+                                {{ __('messages.Automatically generate detailed reports with visual charts and risk trend analysis.') }}
                             </p>
                         </div>
                     </div>
@@ -189,9 +243,9 @@
                             <div class="feature-icon bg-warning mx-auto">
                                 <i class="bi bi-people"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Quản lý nhóm</h5>
+                            <h5 class="card-title fw-bold">{{ __('messages.Team Management') }}</h5>
                             <p class="card-text">
-                                Phân quyền và quản lý nhóm làm việc, giao nhiệm vụ xử lý sự cố một cách có hệ thống.
+                                {{ __('messages.Manage work groups, assign incident handling tasks systematically.') }}
                             </p>
                         </div>
                     </div>
@@ -204,9 +258,9 @@
                             <div class="feature-icon bg-danger mx-auto">
                                 <i class="bi bi-clock"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Xử lý khẩn cấp</h5>
+                            <h5 class="card-title fw-bold">{{ __('messages.Emergency Response') }}</h5>
                             <p class="card-text">
-                                Quy trình xử lý sự cố được tự động hóa với các bước rõ ràng và thời gian phản hồi tối ưu.
+                                {{ __('messages.Automated incident handling process with clear steps and optimal response time.') }}
                             </p>
                         </div>
                     </div>
@@ -219,9 +273,9 @@
                             <div class="feature-icon bg-dark mx-auto">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
-                            <h5 class="card-title fw-bold">Bảo mật cao</h5>
+                            <h5 class="card-title fw-bold">{{ __('messages.High Security') }}</h5>
                             <p class="card-text">
-                                Mã hóa dữ liệu và tuân thủ các tiêu chuẩn bảo mật quốc tế để bảo vệ thông tin doanh nghiệp.
+                                {{ __('messages.Data encryption and compliance with international security standards to protect business information.') }}
                             </p>
                         </div>
                     </div>
@@ -235,23 +289,29 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="display-4 fw-bold mb-4">Sẵn sàng bắt đầu?</h2>
+                    <h2 class="display-4 fw-bold mb-4">{{ __('messages.Ready to get started?') }}</h2>
                     <p class="lead mb-5">
-                        Tham gia cùng hàng nghìn doanh nghiệp đã tin tưởng sử dụng SafetyAI để quản lý rủi ro hiệu quả.
+                        {{ __('messages.Join thousands of businesses that trust SafetyAI for effective risk management.') }}
                     </p>
                     <div class="d-flex flex-wrap justify-content-center gap-3">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="btn btn-light btn-custom">
-                                    <i class="bi bi-speedometer2 me-2"></i>Truy cập Dashboard
-                                </a>
+                                @if(auth()->user()->role === 'manager')
+                                    <a href="{{ route('admin.dashboard') }}" class="btn btn-light btn-custom">
+                                        <i class="bi bi-speedometer2 me-2"></i>{{ __('messages.Access Dashboard') }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('incidents.create') }}" class="btn btn-light btn-custom">
+                                        <i class="bi bi-plus-circle me-2"></i>{{ __('messages.Report Risk') }}
+                                    </a>
+                                @endif
                             @else
                                 <a href="{{ route('login') }}" class="btn btn-light btn-custom">
-                                    <i class="bi bi-play-circle me-2"></i>Bắt đầu miễn phí
+                                    <i class="bi bi-play-circle me-2"></i>{{ __('messages.Start Free') }}
                                 </a>
                         @if (Route::has('register'))
                                     <a href="{{ route('register') }}" class="btn btn-outline-light btn-custom">
-                                        <i class="bi bi-person-plus me-2"></i>Đăng ký ngay
+                                        <i class="bi bi-person-plus me-2"></i>{{ __('messages.Register Now') }}
                             </a>
                         @endif
                     @endauth
@@ -272,51 +332,51 @@
                         <span class="h4 mb-0 text-gradient">SafetyAI</span>
                     </div>
                     <p>
-                        Hệ thống quản lý rủi ro thông minh với AI, giúp doanh nghiệp phòng ngừa và xử lý sự cố hiệu quả.
+                        {{ __('messages.AI-powered enterprise incident and risk management system') }}
                     </p>
                 </div>
                 
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Sản phẩm</h6>
+                    <h6 class="fw-bold mb-3">{{ __('messages.Product') }}</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Dự đoán rủi ro</a></li>
-                        <li><a href="#" class="footer-link">Cảnh báo thời gian thực</a></li>
-                        <li><a href="#" class="footer-link">Báo cáo thông minh</a></li>
-                        <li><a href="#" class="footer-link">Quản lý nhóm</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Risk Prediction') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Real-time Warning') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Smart Reporting') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Team Management') }}</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Hỗ trợ</h6>
+                    <h6 class="fw-bold mb-3">{{ __('messages.Support') }}</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Tài liệu hướng dẫn</a></li>
-                        <li><a href="#" class="footer-link">API Documentation</a></li>
-                        <li><a href="#" class="footer-link">Liên hệ hỗ trợ</a></li>
-                        <li><a href="#" class="footer-link">FAQ</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Documentation') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.API Documentation') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Contact Support') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.FAQ') }}</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Công ty</h6>
+                    <h6 class="fw-bold mb-3">{{ __('messages.Company') }}</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Về chúng tôi</a></li>
-                        <li><a href="#" class="footer-link">Tin tức</a></li>
-                        <li><a href="#" class="footer-link">Tuyển dụng</a></li>
-                        <li><a href="#" class="footer-link">Chính sách bảo mật</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.About Us') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.News') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Careers') }}</a></li>
+                        <li><a href="#" class="footer-link">{{ __('messages.Privacy Policy') }}</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Liên hệ</h6>
+                    <h6 class="fw-bold mb-3">{{ __('messages.Contact') }}</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <i class="bi bi-envelope me-2"></i>contact@safetyai.com
+                            <i class="bi bi-envelope me-2"></i>{{ __('messages.Contact Email') }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-telephone me-2"></i>+84 123 456 789
+                            <i class="bi bi-telephone me-2"></i>{{ __('messages.Contact Phone') }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-geo-alt me-2"></i>Hà Nội, Việt Nam
+                            <i class="bi bi-geo-alt me-2"></i>{{ __('messages.Contact Address') }}
                         </li>
                     </ul>
                 </div>
@@ -325,7 +385,7 @@
             <hr class="my-4" style="border-color: rgba(59, 130, 246, 0.2);">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; 2024 SafetyAI. Tất cả quyền được bảo lưu.</p>
+                    <p class="mb-0">&copy; 2024 SafetyAI. {{ __('messages.All rights reserved') }}.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="d-flex justify-content-md-end gap-3">
