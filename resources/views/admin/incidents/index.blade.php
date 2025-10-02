@@ -73,9 +73,9 @@
                             <th>{{ __('admin.Title') }}</th>
                             <th>{{ __('messages.Location') }}</th>
                             <th>{{ __('admin.Severity') }}</th>
+                            <th>{{ __('admin.Status') }}</th>
                             <th>{{ __('admin.Reporter') }}</th>
                             <th>{{ __('admin.Occurred At') }}</th>
-                            <th>{{ __('admin.Date') }}</th>
                             <th>{{ __('admin.Actions') }}</th>
                         </tr>
                     </thead>
@@ -109,6 +109,24 @@
                                 @endif
                             </td>
                             <td>
+                                @switch($incident->status ?? 'pending')
+                                    @case('pending')
+                                        <span class="badge bg-warning">{{ __('admin.Pending') }}</span>
+                                        @break
+                                    @case('investigating')
+                                        <span class="badge bg-info">{{ __('admin.Investigating') }}</span>
+                                        @break
+                                    @case('resolved')
+                                        <span class="badge bg-success">{{ __('admin.Resolved') }}</span>
+                                        @break
+                                    @case('closed')
+                                        <span class="badge bg-secondary">{{ __('admin.Closed') }}</span>
+                                        @break
+                                    @default
+                                        <span class="badge bg-warning">{{ __('admin.Pending') }}</span>
+                                @endswitch
+                            </td>
+                            <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
                                         {{ substr($incident->user->name, 0, 1) }}
@@ -126,7 +144,6 @@
                                     <span class="text-muted">Không xác định</span>
                                 @endif
                             </td>
-                            <td>{{ $incident->created_at->format('d/m/Y H:i') }}</td>
                             <td>
                                 <div class="d-flex gap-1">
                                     <a href="{{ route('admin.incidents.show', $incident) }}" 
