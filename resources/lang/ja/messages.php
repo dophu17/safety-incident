@@ -57,6 +57,7 @@ return [
     'Contact details are visible to employees' => '連絡先は従業員に表示されます',
     'Description appears in reports' => '説明はレポートに表示されます',
     'Company information updated successfully' => '会社情報を正常に更新しました',
+    'Provide detailed information about your company, business activities, and operational characteristics' => '会社、事業活動、運営特性について詳細情報を提供してください',
     
     // Incidents
     'My Incidents' => 'マイインシデント',

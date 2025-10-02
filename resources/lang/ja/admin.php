@@ -162,6 +162,21 @@ return [
     'Risk level, root causes, solutions, and predict similar incidents' => 'リスクレベル、根本原因、解決策、類似インシデントの予測',
     'Fill template will replace current content. Are you sure?' => 'テンプレート入力すると現在の内容が置き換えられます。よろしいですか？',
     
+    // Company Description AI Guidance
+    'Business Type:' => '🏢 事業タイプ：',
+    'Industry, main activities' => '業界、主要活動',
+    'Operations:' => '🏭 運営：',
+    'Manufacturing processes, services' => '製造プロセス、サービス',
+    'Workforce:' => '👥 労働力：',
+    'Number of employees, departments' => '従業員数、部門',
+    'Facilities:' => '🏗️ 施設：',
+    'Workplaces, equipment, locations' => '職場、設備、場所',
+    'Safety Focus:' => '🛡️ 安全重視：',
+    'Safety measures, protocols' => '安全対策、プロトコル',
+    'Environment:' => '⚠️ 環境：',
+    'Working conditions, hazards' => '労働条件、危険要因',
+    'Company profile, risk patterns, safety recommendations, and incident predictions' => '会社プロファイル、リスクパターン、安全推奨事項、インシデント予測',
+    
     // Additional keys
     'Filters' => 'フィルター',
     'From Date' => '開始日',

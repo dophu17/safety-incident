@@ -162,6 +162,21 @@ return [
     'Risk level, root causes, solutions, and predict similar incidents' => 'Mức độ rủi ro, nguyên nhân gốc rễ, giải pháp khắc phục, và dự đoán sự cố tương tự',
     'Fill template will replace current content. Are you sure?' => 'Điền mẫu nhanh sẽ thay thế nội dung hiện tại. Bạn có chắc chắn?',
     
+    // Company Description AI Guidance
+    'Business Type:' => '🏢 Loại hình kinh doanh:',
+    'Industry, main activities' => 'Ngành nghề, hoạt động chính',
+    'Operations:' => '🏭 Hoạt động:',
+    'Manufacturing processes, services' => 'Quy trình sản xuất, dịch vụ',
+    'Workforce:' => '👥 Nhân lực:',
+    'Number of employees, departments' => 'Số nhân viên, phòng ban',
+    'Facilities:' => '🏗️ Cơ sở vật chất:',
+    'Workplaces, equipment, locations' => 'Nơi làm việc, thiết bị, địa điểm',
+    'Safety Focus:' => '🛡️ Trọng tâm an toàn:',
+    'Safety measures, protocols' => 'Biện pháp an toàn, quy trình',
+    'Environment:' => '⚠️ Môi trường:',
+    'Working conditions, hazards' => 'Điều kiện làm việc, mối nguy hiểm',
+    'Company profile, risk patterns, safety recommendations, and incident predictions' => 'Hồ sơ công ty, mẫu rủi ro, khuyến nghị an toàn, và dự đoán sự cố',
+    
     // Additional keys
     'Filters' => 'Bộ lọc',
     'From Date' => 'Từ ngày',
