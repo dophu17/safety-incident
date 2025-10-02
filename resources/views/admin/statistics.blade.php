@@ -316,5 +316,6 @@ const monthChart = new Chart(monthCtx, {
         }
     }
 });
+
 </script>
 @endsection

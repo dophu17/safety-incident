@@ -68,6 +68,14 @@ class AdminController extends Controller
             ->limit(10)
             ->get();
 
+        // Get company for potential AI analysis (but don't analyze by default)
+        $company = Company::find($companyId);
+        
+        // Initialize AI analysis variables as null (no analysis by default)
+        $aiAnalysis = null;
+        $companyAnalysis = null;
+        $safetyRecommendations = null;
+
         return view('admin.dashboard', compact(
             'totalIncidents',
             'totalUsers',
@@ -76,7 +84,11 @@ class AdminController extends Controller
             'monthlyIncidents',
             'dailyIncidents',
             'incidentsByLocation',
-            'incidentsByUser'
+            'incidentsByUser',
+            'aiAnalysis',
+            'companyAnalysis',
+            'safetyRecommendations',
+            'company'
         ));
     }
 

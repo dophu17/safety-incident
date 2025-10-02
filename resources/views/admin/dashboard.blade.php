@@ -3,7 +3,37 @@
 @section('title', __('admin.Dashboard'))
 @section('page-title', __('admin.Overview Statistics'))
 
+@push('styles')
+<link href="{{ asset('css/ai-dashboard.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
+<!-- AI Analysis Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm ai-analysis-card">
+            <div class="card-header ai-analysis-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-robot me-2 ai-robot-icon"></i>{{ __('admin.AI Analysis & Recommendations') }}
+                </h5>
+                <button type="button" class="btn btn-sm ai-refresh-btn" id="refreshAIAnalysis" onclick="refreshAIAnalysis()">
+                    <i class="fas fa-sync-alt me-1"></i>{{ __('admin.Refresh AI Analysis') }}
+                </button>
+            </div>
+            <div class="card-body" id="aiAnalysisContent">
+                <div class="text-center py-5">
+                    <i class="fas fa-robot fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">{{ __('admin.No AI Analysis Available') }}</h5>
+                    <p class="text-muted">{{ __('admin.Click refresh to generate AI analysis based on your incident data') }}</p>
+                    <button type="button" class="btn ai-generate-btn" onclick="refreshAIAnalysis()">
+                        <i class="fas fa-sync-alt me-1"></i>{{ __('admin.Generate AI Analysis') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Statistics Cards -->
 <div class="row mb-4">
     <div class="col-md-3 mb-3">
@@ -84,6 +114,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="row">
     <!-- Incidents by User -->
@@ -244,6 +275,296 @@ const locationChart = new Chart(locationCtx, {
         }
     }
 });
+
+// AI Analysis Refresh Function
+function refreshAIAnalysis() {
+    const button = document.getElementById('refreshAIAnalysis');
+    const content = document.getElementById('aiAnalysisContent');
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>{{ __("admin.Analyzing...") }}';
+    
+    // Show loading content with detailed steps
+    content.innerHTML = `
+        <div class="text-center py-5">
+            <div class="ai-loading mx-auto mb-3"></div>
+            <h5 class="text-primary">{{ __('admin.AI is analyzing your data...') }}</h5>
+            <div class="mt-3">
+                <div class="mb-2">
+                    <i class="fas fa-chart-line text-info me-2"></i>
+                    <span class="small">{{ __('admin.Analyzing incident patterns and trends...') }}</span>
+                </div>
+                <div class="mb-2">
+                    <i class="fas fa-building text-success me-2"></i>
+                    <span class="small">{{ __('admin.Evaluating company profile and risk factors...') }}</span>
+                </div>
+                <div class="mb-2">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    <span class="small">{{ __('admin.Generating safety recommendations...') }}</span>
+                </div>
+            </div>
+            <p class="text-muted mt-3">{{ __('admin.This may take a few moments') }}</p>
+        </div>
+    `;
+    
+    // Make AJAX request to refresh AI analysis
+    fetch('{{ route("admin.dashboard.ai-refresh") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Display the AI analysis results directly
+            displayAIAnalysis(data.data);
+        } else {
+            throw new Error(data.message || 'AI analysis failed');
+        }
+    })
+    .catch(error => {
+        console.error('AI Analysis Error:', error);
+        
+        // Show error state
+        content.innerHTML = `
+            <div class="text-center py-5">
+                <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                <h5 class="text-danger">{{ __('admin.AI Analysis Failed') }}</h5>
+                <p class="text-muted">{{ __('admin.Please try again later') }}</p>
+                <button type="button" class="btn ai-generate-btn" onclick="refreshAIAnalysis()">
+                    <i class="fas fa-sync-alt me-1"></i>{{ __('admin.Try Again') }}
+                </button>
+            </div>
+        `;
+        
+        // Reset button
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-sync-alt me-1"></i>{{ __("admin.Refresh AI Analysis") }}';
+    });
+}
+
+// Function to display AI analysis results
+function displayAIAnalysis(data) {
+    const content = document.getElementById('aiAnalysisContent');
+    const button = document.getElementById('refreshAIAnalysis');
+    
+    // Debug logging
+    console.log('AI Analysis Data:', data);
+    console.log('Department Analysis:', data.aiAnalysis?.department_analysis);
+    console.log('Location Analysis:', data.aiAnalysis?.location_analysis);
+    
+    // Reset button
+    button.disabled = false;
+    button.innerHTML = '<i class="fas fa-sync-alt me-1"></i>{{ __("admin.Refresh AI Analysis") }}';
+    
+    let html = '<div class="row">';
+    
+    // Incident Analysis
+    if (data.aiAnalysis) {
+        html += `
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>{{ __('admin.Incident Analysis') }}
+                        </h6>
+                    </div>
+                    <div class="card-body">`;
+        
+        if (data.aiAnalysis.department_analysis && data.aiAnalysis.department_analysis.high_risk_departments && data.aiAnalysis.department_analysis.high_risk_departments.length > 0) {
+            html += `
+                <div class="mb-3">
+                    <h6 class="text-primary">{{ __('admin.High Risk Departments') }}</h6>
+                    <div class="d-flex flex-wrap gap-1">`;
+            data.aiAnalysis.department_analysis.high_risk_departments.forEach(dept => {
+                html += `<span class="badge ai-department-badge">${dept}</span>`;
+            });
+            html += `
+                    </div>
+                    <p class="small text-muted mt-2">${data.aiAnalysis.department_analysis.analysis || ''}</p>
+                </div>`;
+        }
+        
+        if (data.aiAnalysis.location_analysis && data.aiAnalysis.location_analysis.high_risk_locations && data.aiAnalysis.location_analysis.high_risk_locations.length > 0) {
+            html += `
+                <div class="mb-3">
+                    <h6 class="text-warning">{{ __('admin.High Risk Locations') }}</h6>
+                    <div class="d-flex flex-wrap gap-1">`;
+            data.aiAnalysis.location_analysis.high_risk_locations.forEach(location => {
+                html += `<span class="badge ai-location-badge">${location}</span>`;
+            });
+            html += `
+                    </div>
+                    <p class="small text-muted mt-2">${data.aiAnalysis.location_analysis.analysis || ''}</p>
+                </div>`;
+        }
+        
+        if (data.aiAnalysis.content_analysis) {
+            html += `
+                <div class="mb-3">
+                    <h6 class="text-info">{{ __('admin.Content Analysis') }}</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <strong class="small">{{ __('admin.Main Themes') }}:</strong>
+                            <ul class="list-unstyled small mb-0">`;
+            if (data.aiAnalysis.content_analysis.main_themes && data.aiAnalysis.content_analysis.main_themes.length > 0) {
+                data.aiAnalysis.content_analysis.main_themes.forEach(theme => {
+                    html += `<li><i class="fas fa-tag text-info me-1"></i>${theme}</li>`;
+                });
+            } else {
+                html += `<li class="text-muted">Không có dữ liệu</li>`;
+            }
+            html += `
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <strong class="small">{{ __('admin.Common Issues') }}:</strong>
+                            <ul class="list-unstyled small mb-0">`;
+            if (data.aiAnalysis.content_analysis.common_issues && data.aiAnalysis.content_analysis.common_issues.length > 0) {
+                data.aiAnalysis.content_analysis.common_issues.forEach(issue => {
+                    html += `<li><i class="fas fa-exclamation-circle text-warning me-1"></i>${issue}</li>`;
+                });
+            } else {
+                html += `<li class="text-muted">Không có dữ liệu</li>`;
+            }
+            html += `
+                            </ul>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        if (data.aiAnalysis.recommendations && data.aiAnalysis.recommendations.length > 0) {
+            html += `
+                <div>
+                    <h6 class="text-success">{{ __('admin.Recommendations') }}</h6>
+                    <ul class="list-unstyled mb-0">`;
+            data.aiAnalysis.recommendations.forEach(recommendation => {
+                html += `
+                        <li class="small mb-1 ai-recommendation-item">
+                            <i class="fas fa-check-circle text-success me-1"></i>${recommendation}
+                        </li>`;
+            });
+            html += `
+                    </ul>
+                </div>`;
+        }
+        
+        html += `
+                    </div>
+                </div>
+            </div>`;
+    }
+    
+    // Company Analysis
+    if (data.companyAnalysis) {
+        html += `
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-building me-2"></i>{{ __('admin.Company Analysis') }}
+                        </h6>
+                    </div>
+                    <div class="card-body">`;
+        
+        if (data.companyAnalysis.company_profile) {
+            html += `
+                <div class="mb-3">
+                    <h6 class="text-primary">{{ __('admin.Business Profile') }}</h6>
+                    <p class="small">${data.companyAnalysis.company_profile.business_type}</p>
+                    <p class="small">${data.companyAnalysis.company_profile.scale_assessment}</p>
+                </div>`;
+        }
+        
+        if (data.companyAnalysis.safety_recommendations) {
+            html += `
+                <div class="mb-3">
+                    <h6 class="text-warning">{{ __('admin.Safety Recommendations') }}</h6>`;
+            data.companyAnalysis.safety_recommendations.forEach(rec => {
+                html += `
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1">
+                            <strong class="small">${rec.category}</strong>
+                            <p class="small mb-0">${rec.recommendation}</p>
+                        </div>
+                        <span class="badge ai-priority-${rec.priority.toLowerCase()}">
+                            ${rec.priority}
+                        </span>
+                    </div>`;
+            });
+            html += `</div>`;
+        }
+        
+        html += `
+                    </div>
+                </div>
+            </div>`;
+    }
+    
+    // Safety Warnings
+    if (data.safetyRecommendations) {
+        html += `
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ __('admin.Safety Warnings') }}
+                        </h6>
+                    </div>
+                    <div class="card-body">`;
+        
+        if (data.safetyRecommendations.future_warnings) {
+            html += `
+                <div class="mb-3">
+                    <h6 class="text-danger">{{ __('admin.Future Warnings') }}</h6>`;
+            data.safetyRecommendations.future_warnings.forEach(warning => {
+                const alertClass = warning.severity === 'High' ? 'danger' : (warning.severity === 'Medium' ? 'warning' : 'info');
+                html += `
+                    <div class="alert alert-${alertClass} py-2 px-3 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong class="small">${warning.type}</strong>
+                                <p class="small mb-0">${warning.warning}</p>
+                            </div>
+                            <small class="text-muted">${warning.timeframe}</small>
+                        </div>
+                    </div>`;
+            });
+            html += `</div>`;
+        }
+        
+        if (data.safetyRecommendations.preventive_measures) {
+            html += `
+                <div>
+                    <h6 class="text-success">{{ __('admin.Preventive Measures') }}</h6>`;
+            data.safetyRecommendations.preventive_measures.forEach(measure => {
+                html += `
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1">
+                            <p class="small mb-0">${measure.measure}</p>
+                            <small class="text-muted">${measure.department}</small>
+                        </div>
+                        <span class="badge ai-priority-${measure.priority.toLowerCase()}">
+                            ${measure.priority}
+                        </span>
+                    </div>`;
+            });
+            html += `</div>`;
+        }
+        
+        html += `
+                    </div>
+                </div>
+            </div>`;
+    }
+    
+    html += '</div>';
+    content.innerHTML = html;
+}
 </script>
 @endsection
 
