@@ -231,5 +231,21 @@ return [
     
     // Statistics
     'Total Employees' => 'Tổng số nhân viên',
+    
+    // AI Analysis Results
+    'Most Common Severity' => 'Mức độ nghiêm trọng phổ biến nhất',
+    'Main Safety Issues' => 'Các vấn đề an toàn chính',
+    'Company Size' => 'Quy mô công ty',
+    'Immediate' => 'Ngay lập tức',
+    'Contact Personnel' => 'Nhân sự liên hệ',
+    'Response' => 'Phản ứng',
+    'Escalation' => 'Leo thang',
+    'High' => 'Cao',
+    'Medium' => 'Trung bình',
+    'Low' => 'Thấp',
+    'Large' => 'Lớn',
+    'Medium Size' => 'Trung bình',
+    'Small' => 'Nhỏ',
+    'employees' => 'nhân viên',
 ];
 

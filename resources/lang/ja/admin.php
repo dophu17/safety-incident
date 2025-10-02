@@ -231,5 +231,21 @@ return [
     
     // Statistics
     'Total Employees' => '総従業員数',
+    
+    // AI Analysis Results
+    'Most Common Severity' => '最も一般的な重大度',
+    'Main Safety Issues' => '主要な安全問題',
+    'Company Size' => '会社規模',
+    'Immediate' => '即座',
+    'Contact Personnel' => '連絡担当者',
+    'Response' => '対応',
+    'Escalation' => 'エスカレーション',
+    'High' => '高',
+    'Medium' => '中',
+    'Low' => '低',
+    'Large' => '大',
+    'Medium Size' => '中',
+    'Small' => '小',
+    'employees' => '名',
 ];
 

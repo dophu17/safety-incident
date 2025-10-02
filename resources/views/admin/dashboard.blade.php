@@ -557,7 +557,7 @@ function displayAIAnalysis(data) {
                     <div class="mb-3">
                         <h6 class="text-danger mb-2">{{ __('admin.Equipment Risks') }}</h6>`;
                 data.equipmentAnalysis.equipment_risks.forEach(risk => {
-                    const riskClass = risk.risk_level === 'High' ? 'danger' : (risk.risk_level === 'Medium' ? 'warning' : 'info');
+                    const riskClass = risk.risk_level === '{{ __('admin.High') }}' ? 'danger' : (risk.risk_level === '{{ __('admin.Medium') }}' ? 'warning' : 'info');
                     html += `
                         <div class="alert alert-${riskClass} py-2 px-3 mb-2">
                             <div class="d-flex justify-content-between align-items-start">
@@ -579,7 +579,7 @@ function displayAIAnalysis(data) {
                     <div class="mb-3">
                         <h6 class="text-warning mb-2">{{ __('admin.Repair Recommendations') }}</h6>`;
                 data.equipmentAnalysis.repair_recommendations.forEach(repair => {
-                    const priorityClass = repair.priority === 'High' ? 'danger' : (repair.priority === 'Medium' ? 'warning' : 'info');
+                    const priorityClass = repair.priority === '{{ __('admin.High') }}' ? 'danger' : (repair.priority === '{{ __('admin.Medium') }}' ? 'warning' : 'info');
                     html += `
                         <div class="card border-${priorityClass} mb-2">
                             <div class="card-header bg-${priorityClass} text-white py-2">
@@ -676,7 +676,7 @@ function displayAIAnalysis(data) {
                             <div class="mt-2">
                                 <div class="row">
                                     <div class="col-6">
-                                        <strong class="small">Immediate Response:</strong>
+                                        <strong class="small">{{ __('admin.Immediate') }} {{ __('admin.Response') }}:</strong>
                                         <ul class="list-unstyled small mb-0">`;
                     procedure.immediate_response.forEach(response => {
                         html += `<li><i class="fas fa-exclamation-circle text-danger me-1"></i>${response}</li>`;
@@ -685,7 +685,7 @@ function displayAIAnalysis(data) {
                                         </ul>
                                     </div>
                                     <div class="col-6">
-                                        <strong class="small">Contact Personnel:</strong>
+                                        <strong class="small">{{ __('admin.Contact Personnel') }}:</strong>
                                         <ul class="list-unstyled small mb-0">`;
                     procedure.contact_personnel.forEach(person => {
                         html += `<li><i class="fas fa-user text-info me-1"></i>${person}</li>`;
@@ -696,7 +696,7 @@ function displayAIAnalysis(data) {
                                 </div>
                                 <div class="mt-2">
                                     <small class="text-muted">
-                                        <strong>Escalation:</strong> ${procedure.escalation_procedure}
+                                        <strong>{{ __('admin.Escalation') }}:</strong> ${procedure.escalation_procedure}
                                     </small>
                                 </div>
                             </div>

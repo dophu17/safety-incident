@@ -800,7 +800,7 @@ Your response must be valid JSON only.";
             return [
                 'department_analysis' => [
                     'high_risk_departments' => $departments ?: ['製造部', 'メンテナンス部'],
-                    'analysis' => "実際のインシデントデータに基づく分析。総インシデント数: {$incidents->count()}件。最も多い重大度: {$mostCommonSeverity}。"
+                    'analysis' => "実際のインシデントデータに基づく分析。総インシデント数: {$incidents->count()}件。" . __('admin.Most Common Severity') . ": " . __('admin.' . ucfirst(strtolower($mostCommonSeverity))) . "。"
                 ],
                 'location_analysis' => [
                     'high_risk_locations' => $highRiskLocations ?: ['工場フロア', '機械室'],
@@ -816,7 +816,7 @@ Your response must be valid JSON only.";
                 'trend_analysis' => [
                     'patterns' => ['月間インシデント傾向', '重大度分布'],
                     'analysis' => "インシデント統計: 重大度別 " . json_encode($severityCounts) . "、ステータス別 " . json_encode($statuses) . "。",
-                    'severity_trends' => "最も多い重大度: {$mostCommonSeverity}",
+                    'severity_trends' => __('admin.Most Common Severity') . ": " . __('admin.' . ucfirst(strtolower($mostCommonSeverity))),
                     'frequency_analysis' => "総インシデント数: {$incidents->count()}件"
                 ],
                 'recommendations' => [
@@ -837,7 +837,7 @@ Your response must be valid JSON only.";
             return [
                 'department_analysis' => [
                     'high_risk_departments' => $departments ?: ['Sản xuất', 'Bảo trì'],
-                    'analysis' => "Phân tích dựa trên dữ liệu sự cố thực tế. Tổng số sự cố: {$incidents->count()} vụ. Mức độ nghiêm trọng phổ biến nhất: {$mostCommonSeverity}."
+                    'analysis' => "Phân tích dựa trên dữ liệu sự cố thực tế. Tổng số sự cố: {$incidents->count()} vụ. " . __('admin.Most Common Severity') . ": " . __('admin.' . ucfirst(strtolower($mostCommonSeverity))) . "."
                 ],
                 'location_analysis' => [
                     'high_risk_locations' => $highRiskLocations ?: ['Tầng sản xuất', 'Phòng máy'],
@@ -853,7 +853,7 @@ Your response must be valid JSON only.";
                 'trend_analysis' => [
                     'patterns' => ['Xu hướng sự cố theo tháng', 'Phân bố mức độ nghiêm trọng'],
                     'analysis' => "Thống kê sự cố: Theo mức độ " . json_encode($severityCounts) . ", Theo trạng thái " . json_encode($statuses) . ".",
-                    'severity_trends' => "Mức độ nghiêm trọng phổ biến nhất: {$mostCommonSeverity}",
+                    'severity_trends' => __('admin.Most Common Severity') . ": " . __('admin.' . ucfirst(strtolower($mostCommonSeverity))),
                     'frequency_analysis' => "Tổng số sự cố: {$incidents->count()} vụ"
                 ],
                 'recommendations' => [
@@ -966,10 +966,15 @@ Your response must be valid JSON only.";
         $incidentCount = $incidents->count();
         $severityCounts = $incidents->pluck('severity')->countBy()->toArray();
         
+        // Translate severity levels
+        $translatedSeverities = array_map(function($severity) {
+            return __('admin.' . ucfirst(strtolower($severity)));
+        }, array_keys($severityCounts));
+        
         if ($locale === 'ja') {
-            return "{$industry}業界の企業。インシデント数: {$incidentCount}件。主要な安全課題: " . implode(', ', array_keys($severityCounts)) . "。";
+            return "{$industry}業界の企業。インシデント数: {$incidentCount}件。" . __('admin.Main Safety Issues') . ": " . implode(', ', $translatedSeverities) . "。";
         } else {
-            return "Công ty hoạt động trong lĩnh vực {$industry}. Số sự cố: {$incidentCount} vụ. Các vấn đề an toàn chính: " . implode(', ', array_keys($severityCounts)) . ".";
+            return "Công ty hoạt động trong lĩnh vực {$industry}. Số sự cố: {$incidentCount} vụ. " . __('admin.Main Safety Issues') . ": " . implode(', ', $translatedSeverities) . ".";
         }
     }
 
@@ -978,10 +983,14 @@ Your response must be valid JSON only.";
         $scale = $employeeCount < 50 ? 'Small' : ($employeeCount < 200 ? 'Medium' : 'Large');
         $incidentRate = $employeeCount > 0 ? round(($incidentCount / $employeeCount) * 100, 2) : 0;
         
+        // Translate scale
+        $scaleText = $scale === 'Large' ? __('admin.Large') : 
+                    ($scale === 'Medium' ? __('admin.Medium Size') : __('admin.Small'));
+        
         if ($locale === 'ja') {
-            return "企業規模: {$scale} ({$employeeCount}名)。インシデント率: {$incidentRate}%。";
+            return __('admin.Company Size') . ": {$scaleText} ({$employeeCount}" . __('admin.employees') . ")。インシデント率: {$incidentRate}%。";
         } else {
-            return "Quy mô công ty: {$scale} ({$employeeCount} nhân viên). Tỷ lệ sự cố: {$incidentRate}%.";
+            return __('admin.Company Size') . ": {$scaleText} ({$employeeCount} " . __('admin.employees') . "). Tỷ lệ sự cố: {$incidentRate}%.";
         }
     }
 
@@ -1237,9 +1246,10 @@ Your response must be valid JSON only.";
         $incidentCount = $equipmentIncidents->count();
         
         if ($incidentCount > 0) {
+            $riskLevel = $incidentCount > 5 ? 'High' : ($incidentCount > 2 ? 'Medium' : 'Low');
             $risks[] = [
                 'equipment_type' => $locale === 'ja' ? '主要設備' : 'Thiết bị chính',
-                'risk_level' => $incidentCount > 5 ? 'High' : ($incidentCount > 2 ? 'Medium' : 'Low'),
+                'risk_level' => $this->translateRiskLevel($riskLevel, $locale),
                 'incident_count' => $incidentCount,
                 'common_issues' => $locale === 'ja' ? 
                     ['機械故障', '安全装置不具合', 'メンテナンス不足'] :
@@ -1253,7 +1263,7 @@ Your response must be valid JSON only.";
         return $risks ?: [
             [
                 'equipment_type' => $locale === 'ja' ? '一般設備' : 'Thiết bị thông thường',
-                'risk_level' => 'Low',
+                'risk_level' => $this->translateRiskLevel('Low', $locale),
                 'incident_count' => 0,
                 'common_issues' => $locale === 'ja' ? ['定期点検が必要'] : ['Cần kiểm tra định kỳ'],
                 'symptoms' => $locale === 'ja' ? ['予防的メンテナンス推奨'] : ['Khuyến nghị bảo trì phòng ngừa']
@@ -1267,9 +1277,10 @@ Your response must be valid JSON only.";
         $incidentCount = $equipmentIncidents->count();
         
         if ($incidentCount > 0) {
+            $priority = $incidentCount > 5 ? 'High' : ($incidentCount > 2 ? 'Medium' : 'Low');
             $recommendations[] = [
                 'equipment' => $locale === 'ja' ? '主要設備' : 'Thiết bị chính',
-                'priority' => $incidentCount > 5 ? 'High' : ($incidentCount > 2 ? 'Medium' : 'Low'),
+                'priority' => $this->translateRiskLevel($priority, $locale),
                 'immediate_actions' => $locale === 'ja' ? 
                     ['設備の停止', '安全確認', '専門家への連絡'] :
                     ['Dừng thiết bị', 'Kiểm tra an toàn', 'Liên hệ chuyên gia'],
@@ -1327,6 +1338,12 @@ Your response must be valid JSON only.";
         ];
     }
 
+    private function translateRiskLevel($level, $locale)
+    {
+        $level = ucfirst(strtolower($level));
+        return __('admin.' . $level);
+    }
+
     private function getMostRiskyEquipment($equipmentIncidents, $locale)
     {
         $incidentCount = $equipmentIncidents->count();
@@ -1364,7 +1381,7 @@ Your response must be valid JSON only.";
                 'equipment_risks' => [
                     [
                         'equipment_type' => '一般設備',
-                        'risk_level' => 'Low',
+                        'risk_level' => $this->translateRiskLevel('Low', $locale),
                         'incident_count' => 0,
                         'common_issues' => ['定期点検が必要'],
                         'symptoms' => ['予防的メンテナンス推奨']
@@ -1373,7 +1390,7 @@ Your response must be valid JSON only.";
                 'repair_recommendations' => [
                     [
                         'equipment' => '一般設備',
-                        'priority' => 'Low',
+                        'priority' => $this->translateRiskLevel('Low', $locale),
                         'immediate_actions' => ['定期点検の実施'],
                         'repair_steps' => ['1. 点検', '2. 清掃', '3. 調整'],
                         'required_tools' => ['基本工具'],
@@ -1405,7 +1422,7 @@ Your response must be valid JSON only.";
                 'equipment_risks' => [
                     [
                         'equipment_type' => 'Thiết bị thông thường',
-                        'risk_level' => 'Low',
+                        'risk_level' => $this->translateRiskLevel('Low', $locale),
                         'incident_count' => 0,
                         'common_issues' => ['Cần kiểm tra định kỳ'],
                         'symptoms' => ['Khuyến nghị bảo trì phòng ngừa']
@@ -1414,7 +1431,7 @@ Your response must be valid JSON only.";
                 'repair_recommendations' => [
                     [
                         'equipment' => 'Thiết bị thông thường',
-                        'priority' => 'Low',
+                        'priority' => $this->translateRiskLevel('Low', $locale),
                         'immediate_actions' => ['Thực hiện kiểm tra định kỳ'],
                         'repair_steps' => ['1. Kiểm tra', '2. Vệ sinh', '3. Điều chỉnh'],
                         'required_tools' => ['Dụng cụ cơ bản'],
