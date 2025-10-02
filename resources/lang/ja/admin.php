@@ -247,5 +247,11 @@ return [
     'Medium Size' => '中',
     'Small' => '小',
     'employees' => '名',
+    
+    // Equipment Analysis Details
+    'Immediate Actions' => '即座の行動',
+    'Required Tools' => '必要な工具',
+    'Checklist' => 'チェックリスト',
+    'Replacement Parts' => '交換部品',
 ];
 

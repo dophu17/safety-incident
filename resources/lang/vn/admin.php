@@ -247,5 +247,11 @@ return [
     'Medium Size' => 'Trung bình',
     'Small' => 'Nhỏ',
     'employees' => 'nhân viên',
+    
+    // Equipment Analysis Details
+    'Immediate Actions' => 'Hành động ngay lập tức',
+    'Required Tools' => 'Dụng cụ cần thiết',
+    'Checklist' => 'Danh sách kiểm tra',
+    'Replacement Parts' => 'Linh kiện thay thế',
 ];
 

@@ -591,7 +591,7 @@ function displayAIAnalysis(data) {
                             <div class="card-body py-2">
                                 <div class="row">
                                     <div class="col-6">
-                                        <strong class="small">Immediate Actions:</strong>
+                                        <strong class="small">{{ __('admin.Immediate Actions') }}:</strong>
                                         <ul class="list-unstyled small mb-0">`;
                     repair.immediate_actions.forEach(action => {
                         html += `<li><i class="fas fa-exclamation-triangle text-warning me-1"></i>${action}</li>`;
@@ -600,7 +600,7 @@ function displayAIAnalysis(data) {
                                         </ul>
                                     </div>
                                     <div class="col-6">
-                                        <strong class="small">Required Tools:</strong>
+                                        <strong class="small">{{ __('admin.Required Tools') }}:</strong>
                                         <ul class="list-unstyled small mb-0">`;
                     repair.required_tools.forEach(tool => {
                         html += `<li><i class="fas fa-wrench text-info me-1"></i>${tool}</li>`;
@@ -635,7 +635,7 @@ function displayAIAnalysis(data) {
                             <div class="card-body py-2">
                                 <div class="row">
                                     <div class="col-6">
-                                        <strong class="small">Checklist:</strong>
+                                        <strong class="small">{{ __('admin.Checklist') }}:</strong>
                                         <ul class="list-unstyled small mb-0">`;
                     maintenance.checklist.forEach(check => {
                         html += `<li><i class="fas fa-check text-success me-1"></i>${check}</li>`;
@@ -644,7 +644,7 @@ function displayAIAnalysis(data) {
                                         </ul>
                                     </div>
                                     <div class="col-6">
-                                        <strong class="small">Replacement Parts:</strong>
+                                        <strong class="small">{{ __('admin.Replacement Parts') }}:</strong>
                                         <ul class="list-unstyled small mb-0">`;
                     maintenance.replacement_parts.forEach(part => {
                         html += `<li><i class="fas fa-cog text-info me-1"></i>${part}</li>`;
