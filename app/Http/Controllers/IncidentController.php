@@ -54,8 +54,12 @@ class IncidentController extends Controller
             'images' => !empty($imagePaths) ? $imagePaths : null,
         ]);
 
-        // Redirect back to create page with success message
-        return redirect()->route('incidents.create')->with('success', __('messages.Incident reported successfully. Thank you for your report!'));
+        // Redirect based on user role
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard')->with('success', __('messages.Incident reported successfully. Thank you for your report!'));
+        } else {
+            return redirect()->route('incidents.create')->with('success', __('messages.Incident reported successfully. Thank you for your report!'));
+        }
     }
 
     /**
