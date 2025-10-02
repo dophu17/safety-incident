@@ -221,5 +221,15 @@ return [
     'Incidents by Hour' => 'Sự cố theo giờ',
     'View Details' => 'Xem chi tiết',
     'Verified' => 'Đã xác thực',
+    
+    // Equipment Analysis
+    'Equipment Analysis & Repair' => 'Phân tích & Sửa chữa Thiết bị',
+    'Equipment Risks' => 'Rủi ro Thiết bị',
+    'Repair Recommendations' => 'Khuyến nghị Sửa chữa',
+    'Preventive Maintenance' => 'Bảo trì Phòng ngừa',
+    'Emergency Procedures' => 'Quy trình Khẩn cấp',
+    
+    // Statistics
+    'Total Employees' => 'Tổng số nhân viên',
 ];
 

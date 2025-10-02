@@ -221,5 +221,15 @@ return [
     'Incidents by Hour' => '時間別インシデント',
     'View Details' => '詳細表示',
     'Verified' => '確認済み',
+    
+    // Equipment Analysis
+    'Equipment Analysis & Repair' => '設備分析・修理',
+    'Equipment Risks' => '設備リスク',
+    'Repair Recommendations' => '修理推奨事項',
+    'Preventive Maintenance' => '予防保全',
+    'Emergency Procedures' => '緊急手順',
+    
+    // Statistics
+    'Total Employees' => '総従業員数',
 ];
 

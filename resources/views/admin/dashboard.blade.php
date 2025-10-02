@@ -16,7 +16,7 @@
                 <h5 class="mb-0">
                     <i class="fas fa-robot me-2 ai-robot-icon"></i>{{ __('admin.AI Analysis & Recommendations') }}
                 </h5>
-                <button type="button" class="btn btn-sm ai-refresh-btn" id="refreshAIAnalysis" onclick="refreshAIAnalysis()">
+                <button type="button" class="btn btn-sm btn-gradient-primary ai-refresh-btn" id="refreshAIAnalysis" onclick="refreshAIAnalysis()">
                     <i class="fas fa-sync-alt me-1"></i>{{ __('admin.Refresh AI Analysis') }}
                 </button>
             </div>
@@ -364,6 +364,14 @@ function displayAIAnalysis(data) {
     
     // Incident Analysis
     if (data.aiAnalysis) {
+        // Check if we have any meaningful data to display
+        const hasDepartmentData = data.aiAnalysis.department_analysis && data.aiAnalysis.department_analysis.high_risk_departments && data.aiAnalysis.department_analysis.high_risk_departments.length > 0;
+        const hasLocationData = data.aiAnalysis.location_analysis && data.aiAnalysis.location_analysis.high_risk_locations && data.aiAnalysis.location_analysis.high_risk_locations.length > 0;
+        const hasContentData = data.aiAnalysis.content_analysis && (data.aiAnalysis.content_analysis.main_themes || data.aiAnalysis.content_analysis.common_issues);
+        const hasRecommendations = data.aiAnalysis.recommendations && data.aiAnalysis.recommendations.length > 0;
+        
+        // Only show the card if we have some data
+        if (hasDepartmentData || hasLocationData || hasContentData || hasRecommendations) {
         html += `
             <div class="col-lg-4 mb-4">
                 <div class="card h-100 border-info">
@@ -377,58 +385,58 @@ function displayAIAnalysis(data) {
         if (data.aiAnalysis.department_analysis && data.aiAnalysis.department_analysis.high_risk_departments && data.aiAnalysis.department_analysis.high_risk_departments.length > 0) {
             html += `
                 <div class="mb-3">
-                    <h6 class="text-primary">{{ __('admin.High Risk Departments') }}</h6>
-                    <div class="d-flex flex-wrap gap-1">`;
+                    <h6 class="text-primary mb-2">{{ __('admin.High Risk Departments') }}</h6>
+                    <div class="d-flex flex-wrap gap-1 mb-2">`;
             data.aiAnalysis.department_analysis.high_risk_departments.forEach(dept => {
-                html += `<span class="badge ai-department-badge">${dept}</span>`;
+                html += `<span class="badge bg-primary me-1 mb-1">${dept}</span>`;
             });
             html += `
                     </div>
-                    <p class="small text-muted mt-2">${data.aiAnalysis.department_analysis.analysis || ''}</p>
+                    <p class="small text-muted mb-0">${data.aiAnalysis.department_analysis.analysis || ''}</p>
                 </div>`;
         }
         
         if (data.aiAnalysis.location_analysis && data.aiAnalysis.location_analysis.high_risk_locations && data.aiAnalysis.location_analysis.high_risk_locations.length > 0) {
             html += `
                 <div class="mb-3">
-                    <h6 class="text-warning">{{ __('admin.High Risk Locations') }}</h6>
-                    <div class="d-flex flex-wrap gap-1">`;
+                    <h6 class="text-warning mb-2">{{ __('admin.High Risk Locations') }}</h6>
+                    <div class="d-flex flex-wrap gap-1 mb-2">`;
             data.aiAnalysis.location_analysis.high_risk_locations.forEach(location => {
-                html += `<span class="badge ai-location-badge">${location}</span>`;
+                html += `<span class="badge bg-warning text-dark me-1 mb-1">${location}</span>`;
             });
             html += `
                     </div>
-                    <p class="small text-muted mt-2">${data.aiAnalysis.location_analysis.analysis || ''}</p>
+                    <p class="small text-muted mb-0">${data.aiAnalysis.location_analysis.analysis || ''}</p>
                 </div>`;
         }
         
         if (data.aiAnalysis.content_analysis) {
             html += `
                 <div class="mb-3">
-                    <h6 class="text-info">{{ __('admin.Content Analysis') }}</h6>
+                    <h6 class="text-info mb-2">{{ __('admin.Content Analysis') }}</h6>
                     <div class="row">
                         <div class="col-6">
-                            <strong class="small">{{ __('admin.Main Themes') }}:</strong>
+                            <strong class="small d-block mb-2">{{ __('admin.Main Themes') }}:</strong>
                             <ul class="list-unstyled small mb-0">`;
             if (data.aiAnalysis.content_analysis.main_themes && data.aiAnalysis.content_analysis.main_themes.length > 0) {
                 data.aiAnalysis.content_analysis.main_themes.forEach(theme => {
-                    html += `<li><i class="fas fa-tag text-info me-1"></i>${theme}</li>`;
+                    html += `<li class="mb-1"><i class="fas fa-tag text-info me-1"></i>${theme}</li>`;
                 });
             } else {
-                html += `<li class="text-muted">Không có dữ liệu</li>`;
+                html += `<li class="text-muted mb-1">Không có dữ liệu</li>`;
             }
             html += `
                             </ul>
                         </div>
                         <div class="col-6">
-                            <strong class="small">{{ __('admin.Common Issues') }}:</strong>
+                            <strong class="small d-block mb-2">{{ __('admin.Common Issues') }}:</strong>
                             <ul class="list-unstyled small mb-0">`;
             if (data.aiAnalysis.content_analysis.common_issues && data.aiAnalysis.content_analysis.common_issues.length > 0) {
                 data.aiAnalysis.content_analysis.common_issues.forEach(issue => {
-                    html += `<li><i class="fas fa-exclamation-circle text-warning me-1"></i>${issue}</li>`;
+                    html += `<li class="mb-1"><i class="fas fa-exclamation-circle text-warning me-1"></i>${issue}</li>`;
                 });
             } else {
-                html += `<li class="text-muted">Không có dữ liệu</li>`;
+                html += `<li class="text-muted mb-1">Không có dữ liệu</li>`;
             }
             html += `
                             </ul>
@@ -439,13 +447,14 @@ function displayAIAnalysis(data) {
 
         if (data.aiAnalysis.recommendations && data.aiAnalysis.recommendations.length > 0) {
             html += `
-                <div>
-                    <h6 class="text-success">{{ __('admin.Recommendations') }}</h6>
+                <div class="mb-3">
+                    <h6 class="text-success mb-2">{{ __('admin.Recommendations') }}</h6>
                     <ul class="list-unstyled mb-0">`;
             data.aiAnalysis.recommendations.forEach(recommendation => {
                 html += `
-                        <li class="small mb-1 ai-recommendation-item">
-                            <i class="fas fa-check-circle text-success me-1"></i>${recommendation}
+                        <li class="small mb-2 d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <span>${recommendation}</span>
                         </li>`;
             });
             html += `
@@ -457,6 +466,25 @@ function displayAIAnalysis(data) {
                     </div>
                 </div>
             </div>`;
+        } else {
+            // Show message when no meaningful data
+            html += `
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border-info">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-chart-line me-2"></i>{{ __('admin.Incident Analysis') }}
+                            </h6>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-info-circle fa-2x mb-2"></i>
+                                <p class="mb-0">Không có dữ liệu phân tích sự cố</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
     }
     
     // Company Analysis
@@ -503,6 +531,185 @@ function displayAIAnalysis(data) {
                     </div>
                 </div>
             </div>`;
+    }
+    
+    // Equipment Analysis
+    if (data.equipmentAnalysis) {
+        const hasEquipmentRisks = data.equipmentAnalysis.equipment_risks && data.equipmentAnalysis.equipment_risks.length > 0;
+        const hasRepairRecommendations = data.equipmentAnalysis.repair_recommendations && data.equipmentAnalysis.repair_recommendations.length > 0;
+        const hasPreventiveMaintenance = data.equipmentAnalysis.preventive_maintenance && data.equipmentAnalysis.preventive_maintenance.length > 0;
+        const hasEmergencyProcedures = data.equipmentAnalysis.emergency_procedures && data.equipmentAnalysis.emergency_procedures.length > 0;
+        
+        if (hasEquipmentRisks || hasRepairRecommendations || hasPreventiveMaintenance || hasEmergencyProcedures) {
+            html += `
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-tools me-2"></i>{{ __('admin.Equipment Analysis & Repair') }}
+                            </h6>
+                        </div>
+                        <div class="card-body">`;
+            
+            // Equipment Risks
+            if (hasEquipmentRisks) {
+                html += `
+                    <div class="mb-3">
+                        <h6 class="text-danger mb-2">{{ __('admin.Equipment Risks') }}</h6>`;
+                data.equipmentAnalysis.equipment_risks.forEach(risk => {
+                    const riskClass = risk.risk_level === 'High' ? 'danger' : (risk.risk_level === 'Medium' ? 'warning' : 'info');
+                    html += `
+                        <div class="alert alert-${riskClass} py-2 px-3 mb-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong class="small">${risk.equipment_type}</strong>
+                                    <p class="small mb-1">${risk.common_issues.join(', ')}</p>
+                                    <small class="text-muted">${risk.symptoms.join(', ')}</small>
+                                </div>
+                                <span class="badge bg-${riskClass}">${risk.risk_level}</span>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+            }
+            
+            // Repair Recommendations
+            if (hasRepairRecommendations) {
+                html += `
+                    <div class="mb-3">
+                        <h6 class="text-warning mb-2">{{ __('admin.Repair Recommendations') }}</h6>`;
+                data.equipmentAnalysis.repair_recommendations.forEach(repair => {
+                    const priorityClass = repair.priority === 'High' ? 'danger' : (repair.priority === 'Medium' ? 'warning' : 'info');
+                    html += `
+                        <div class="card border-${priorityClass} mb-2">
+                            <div class="card-header bg-${priorityClass} text-white py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="small">${repair.equipment}</strong>
+                                    <span class="badge bg-light text-dark">${repair.priority}</span>
+                                </div>
+                            </div>
+                            <div class="card-body py-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong class="small">Immediate Actions:</strong>
+                                        <ul class="list-unstyled small mb-0">`;
+                    repair.immediate_actions.forEach(action => {
+                        html += `<li><i class="fas fa-exclamation-triangle text-warning me-1"></i>${action}</li>`;
+                    });
+                    html += `
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong class="small">Required Tools:</strong>
+                                        <ul class="list-unstyled small mb-0">`;
+                    repair.required_tools.forEach(tool => {
+                        html += `<li><i class="fas fa-wrench text-info me-1"></i>${tool}</li>`;
+                    });
+                    html += `
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>${repair.estimated_time}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+            }
+            
+            // Preventive Maintenance
+            if (hasPreventiveMaintenance) {
+                html += `
+                    <div class="mb-3">
+                        <h6 class="text-success mb-2">{{ __('admin.Preventive Maintenance') }}</h6>`;
+                data.equipmentAnalysis.preventive_maintenance.forEach(maintenance => {
+                    html += `
+                        <div class="card border-success mb-2">
+                            <div class="card-header bg-success text-white py-2">
+                                <strong class="small">${maintenance.equipment}</strong>
+                                <span class="badge bg-light text-dark ms-2">${maintenance.maintenance_schedule}</span>
+                            </div>
+                            <div class="card-body py-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong class="small">Checklist:</strong>
+                                        <ul class="list-unstyled small mb-0">`;
+                    maintenance.checklist.forEach(check => {
+                        html += `<li><i class="fas fa-check text-success me-1"></i>${check}</li>`;
+                    });
+                    html += `
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong class="small">Replacement Parts:</strong>
+                                        <ul class="list-unstyled small mb-0">`;
+                    maintenance.replacement_parts.forEach(part => {
+                        html += `<li><i class="fas fa-cog text-info me-1"></i>${part}</li>`;
+                    });
+                    html += `
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-dollar-sign me-1"></i>${maintenance.cost_estimate}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+            }
+            
+            // Emergency Procedures
+            if (hasEmergencyProcedures) {
+                html += `
+                    <div>
+                        <h6 class="text-danger mb-2">{{ __('admin.Emergency Procedures') }}</h6>`;
+                data.equipmentAnalysis.emergency_procedures.forEach(procedure => {
+                    html += `
+                        <div class="alert alert-danger py-2 px-3 mb-2">
+                            <strong class="small">${procedure.situation}</strong>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong class="small">Immediate Response:</strong>
+                                        <ul class="list-unstyled small mb-0">`;
+                    procedure.immediate_response.forEach(response => {
+                        html += `<li><i class="fas fa-exclamation-circle text-danger me-1"></i>${response}</li>`;
+                    });
+                    html += `
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong class="small">Contact Personnel:</strong>
+                                        <ul class="list-unstyled small mb-0">`;
+                    procedure.contact_personnel.forEach(person => {
+                        html += `<li><i class="fas fa-user text-info me-1"></i>${person}</li>`;
+                    });
+                    html += `
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <strong>Escalation:</strong> ${procedure.escalation_procedure}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                html += `</div>`;
+            }
+            
+            html += `
+                        </div>
+                    </div>
+                </div>`;
+        }
     }
     
     // Safety Warnings

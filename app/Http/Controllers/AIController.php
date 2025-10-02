@@ -65,15 +65,19 @@ class AIController extends Controller
             $companyAnalysis = $aiService->analyzeCompanyProfile($company, $recentIncidents, $locale, $additionalData);
             $safetyRecommendations = $aiService->generateSafetyRecommendations($company, $recentIncidents, $locale, $additionalData);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'AI analysis refreshed successfully',
-                'data' => [
-                    'aiAnalysis' => $aiAnalysis,
-                    'companyAnalysis' => $companyAnalysis,
-                    'safetyRecommendations' => $safetyRecommendations
-                ]
-            ]);
+        // Generate equipment analysis
+        $equipmentAnalysis = $aiService->analyzeEquipmentRisks($recentIncidents, $company, $locale, $additionalData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'AI analysis refreshed successfully',
+            'data' => [
+                'aiAnalysis' => $aiAnalysis,
+                'companyAnalysis' => $companyAnalysis,
+                'safetyRecommendations' => $safetyRecommendations,
+                'equipmentAnalysis' => $equipmentAnalysis
+            ]
+        ]);
 
         } catch (\Exception $e) {
             Log::error('AI Analysis Refresh failed: ' . $e->getMessage());
