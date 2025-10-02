@@ -57,6 +57,7 @@ return [
     'Contact details are visible to employees' => '連絡先は従業員に表示されます',
     'Description appears in reports' => '説明はレポートに表示されます',
     'Company information updated successfully' => '会社情報を正常に更新しました',
+    'Provide detailed information about your company, business activities, and operational characteristics' => '会社、事業活動、運営特性について詳細情報を提供してください',
     
     // Incidents
     'My Incidents' => 'マイインシデント',
@@ -119,7 +120,7 @@ return [
     'As an employee, you can only report new incidents. Viewing incident lists and details is restricted to managers only.' => '従業員として、新しいインシデントを報告することのみができます。インシデントリストと詳細の表示は管理者のみに制限されています。',
     'Are you sure you want to update the status?' => 'ステータスを更新してもよろしいですか？',
     'Are you sure you want to delete this incident?' => 'このインシデントを削除してもよろしいですか？',
-    'All rights reserved.' => '全著作権所有。',
+    'All rights reserved.' => 'All Rights Reserved.',
     'Help us maintain a safe workplace by reporting incidents promptly' => 'インシデントを迅速に報告することで、安全な職場の維持にご協力ください',
     'Please correct the following errors:' => '以下のエラーを修正してください：',
     'Basic Information' => '基本情報',
@@ -169,7 +170,7 @@ return [
     'Careers' => '採用情報',
     'Privacy Policy' => 'プライバシーポリシー',
     'Contact' => '連絡先',
-    'All rights reserved' => '全著作権所有',
+    'All rights reserved' => 'All Rights Reserved',
     'Contact Email' => 'contact@safetyai.com',
     'Contact Phone' => '+84 123 456 789',
     'Contact Address' => 'ハノイ、ベトナム',

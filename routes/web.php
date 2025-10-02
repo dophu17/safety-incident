@@ -5,6 +5,7 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IncidentAdminController;
+use App\Http\Controllers\AIController;
 
 Route::middleware('setLocale')->group(function () {
     Route::get('/', function () {
@@ -81,5 +82,16 @@ Route::middleware('setLocale')->group(function () {
         // Company management
         Route::get('/admin/company', [AdminController::class, 'company'])->name('admin.company');
         Route::put('/admin/company', [AdminController::class, 'updateCompany'])->name('admin.company.update');
+        
+        // AI Analysis
+        Route::get('/admin/incidents/{incident}/ai-analysis', [AIController::class, 'getIncidentAnalysis'])->name('admin.incidents.ai-analysis');
+        Route::post('/admin/dashboard/ai-refresh', [AIController::class, 'refreshAIAnalysis'])->name('admin.dashboard.ai-refresh');
+        Route::post('/admin/statistics/ai-refresh', [AIController::class, 'refreshAIAnalysisWithDateFilter'])->name('admin.statistics.ai-refresh');
+        
+        // Additional AI endpoints
+        Route::get('/admin/ai/company-analysis', [AIController::class, 'getCompanyAnalysis'])->name('admin.ai.company-analysis');
+        Route::get('/admin/ai/safety-recommendations', [AIController::class, 'getSafetyRecommendations'])->name('admin.ai.safety-recommendations');
+        Route::get('/admin/ai/incident-analysis', [AIController::class, 'getIncidentAnalysisData'])->name('admin.ai.incident-analysis');
+        Route::get('/admin/ai/comprehensive-analysis', [AIController::class, 'getComprehensiveAnalysis'])->name('admin.ai.comprehensive-analysis');
     });
 });

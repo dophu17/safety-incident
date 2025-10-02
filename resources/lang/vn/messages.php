@@ -57,6 +57,7 @@ return [
     'Contact details are visible to employees' => 'Thông tin liên hệ hiển thị cho nhân viên',
     'Description appears in reports' => 'Mô tả xuất hiện trong báo cáo',
     'Company information updated successfully' => 'Cập nhật thông tin công ty thành công',
+    'Provide detailed information about your company, business activities, and operational characteristics' => 'Cung cấp thông tin chi tiết về công ty, hoạt động kinh doanh và đặc điểm vận hành của bạn',
     
     // Incidents
     'My Incidents' => 'Sự cố của tôi',

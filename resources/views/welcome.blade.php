@@ -335,38 +335,10 @@
                         {{ __('messages.AI-powered enterprise incident and risk management system') }}
                     </p>
                 </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">{{ __('messages.Product') }}</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">{{ __('messages.Risk Prediction') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.Real-time Warning') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.Smart Reporting') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.Team Management') }}</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">{{ __('messages.Support') }}</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">{{ __('messages.Documentation') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.API Documentation') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.Contact Support') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.FAQ') }}</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">{{ __('messages.Company') }}</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">{{ __('messages.About Us') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.News') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.Careers') }}</a></li>
-                        <li><a href="#" class="footer-link">{{ __('messages.Privacy Policy') }}</a></li>
-                    </ul>
-                </div>
 
-                <div class="col-lg-2 col-md-6 mb-4">
+                <div class="col-lg-4"></div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
                     <h6 class="fw-bold mb-3">{{ __('messages.Contact') }}</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
