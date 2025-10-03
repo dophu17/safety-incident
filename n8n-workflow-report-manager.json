@@ -1,0 +1,234 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "safety-system@yourcompany.com",
+        "toEmail": "={{ $json.email_manager }}",
+        "subject": "={{ $json.total_incidents > 0 ? '🚨 安全インシデント報告 - ' + $json.total_incidents + '件の処理待ち' : '✅ 安全インシデント報告 - 処理待ちのインシデントなし' }}",
+        "html": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>安全インシデント報告</title>\n    <style>\n        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; }\n        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }\n        .header { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 25px; text-align: center; }\n        .header h1 { margin: 0; font-size: 24px; font-weight: 600; }\n        .header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }\n        .summary { background: #f8f9fa; padding: 25px; border-left: 5px solid #e74c3c; margin: 0; }\n        .summary h2 { margin-top: 0; color: #2c3e50; font-size: 20px; }\n        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }\n        .stat-card { background: white; padding: 20px; border-radius: 8px; text-align: center; border: 2px solid #ecf0f1; }\n        .stat-number { font-size: 32px; font-weight: bold; margin: 0; }\n        .stat-label { font-size: 14px; color: #7f8c8d; margin: 5px 0 0 0; }\n        .critical { border-color: #e74c3c; background: #fdf2f2; }\n        .high { border-color: #f39c12; background: #fef9e7; }\n        .medium { border-color: #f1c40f; background: #fffbf0; }\n        .low { border-color: #27ae60; background: #f0f9f0; }\n        .incident-table { width: 100%; border-collapse: collapse; margin-top: 25px; }\n        .incident-table th { background: #34495e; color: white; padding: 15px 12px; text-align: left; font-weight: 600; }\n        .incident-table td { padding: 12px; border-bottom: 1px solid #ecf0f1; }\n        .incident-table tr:hover { background: #f8f9fa; }\n        .severity-critical { background: #e74c3c; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }\n        .severity-high { background: #f39c12; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }\n        .severity-medium { background: #f1c40f; color: #2c3e50; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }\n        .severity-low { background: #27ae60; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }\n        .urgent-badge { background: #e74c3c; color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; margin-left: 8px; }\n        .footer { background: #ecf0f1; padding: 25px; text-align: center; color: #7f8c8d; }\n        .no-incidents { text-align: center; padding: 50px; color: #27ae60; }\n        .no-incidents h2 { color: #27ae60; font-size: 28px; margin-bottom: 20px; }\n        .no-incidents p { font-size: 18px; margin: 10px 0; }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>🚨 安全インシデント報告</h1>\n            <p>送信先: {{ $json.name_manager }} ({{ $json.email_manager }})</p>\n            <p>日付: {{ new Date().toLocaleDateString('ja-JP') }}</p>\n        </div>\n        \n        <div class=\"summary\">\n            <h2>📊 状況概要</h2>\n            <p>管理者様、システムが<strong>{{ $json.total_incidents }}</strong>件の処理待ちインシデントを検出しました。ご注意をお願いします：</p>\n            \n            <div class=\"stats-grid\">\n                <div class=\"stat-card critical\">\n                    <div class=\"stat-number\">{{ $json.critical_count || 0 }}</div>\n                    <div class=\"stat-label\">🚨 重大</div>\n                </div>\n                <div class=\"stat-card high\">\n                    <div class=\"stat-number\">{{ $json.high_count || 0 }}</div>\n                    <div class=\"stat-label\">⚠️ 高</div>\n                </div>\n                <div class=\"stat-card medium\">\n                    <div class=\"stat-number\">{{ $json.medium_count || 0 }}</div>\n                    <div class=\"stat-label\">⚡ 中</div>\n                </div>\n                <div class=\"stat-card low\">\n                    <div class=\"stat-number\">{{ $json.low_count || 0 }}</div>\n                    <div class=\"stat-label\">ℹ️ 低</div>\n                </div>\n            </div>\n        </div>\n        \n        <h2 style=\"padding: 0 25px; color: #2c3e50;\">📋 処理待ちインシデント一覧</h2>\n        <div style=\"padding: 0 25px;\">\n            <table class=\"incident-table\">\n                <thead>\n                    <tr>\n                        <th>ID</th>\n                        <th>インシデントタイトル</th>\n                        <th>場所</th>\n                        <th>重要度</th>\n                        <th>発生日</th>\n                        <th>報告日</th>\n                    </tr>\n                </thead>\n                <tbody>\n                    {{ $json.incident_rows }}\n                </tbody>\n            </table>\n        </div>\n        \n        <div style=\"background: #e8f5e8; border-left: 4px solid #27ae60; padding: 15px; margin: 20px 25px; border-radius: 4px;\">\n            <h3 style=\"margin-top: 0; color: #27ae60;\">💡 アクション推奨事項</h3>\n            {{ $json.critical_count > 0 ? `<p><strong>🚨 最優先:</strong> ${$json.critical_count}件の重大インシデントを即座に処理し、大きなリスクを回避してください。</p>` : '' }}\n            <p><strong>📈 効果:</strong> インシデントの早期処理により、リスクを最小化し、安全文化を強化できます。</p>\n            <p><strong>🔄 フォローアップ:</strong> すべてのインシデントが処理されるまで、システムが継続的にリマインダーを送信します。</p>\n        </div>\n        \n        <div class=\"footer\">\n            <p><strong>🤖 安全インシデント管理システム</strong></p>\n            <p>レポートは {{ new Date().toLocaleString('ja-JP') }} に自動生成されました</p>\n            <p>詳細を確認し、ステータスを更新するには、インシデント管理システムにアクセスしてください。</p>\n            <p style=\"font-size: 12px; margin-top: 15px;\">💡 ヒント: 重要度でフィルタリングして処理を優先してください。</p>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "f36aa452-1d75-4a75-b473-30c4b49a63dd",
+      "name": "Send Email to User",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        48
+      ],
+      "webhookId": "5d29d750-8de0-4fc5-a17b-d1aad4039033",
+      "credentials": {
+        "smtp": {
+          "id": "ujp8DOxrKUjHpOqP",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -352,
+        48
+      ],
+      "id": "03373b29-dd86-445d-9e9a-7413cb5442cd",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM `users` WHERE role = \"manager\";",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -576,
+        48
+      ],
+      "id": "b1a22662-6efc-4223-ac36-4449e0937efe",
+      "name": "Get user Managers",
+      "credentials": {
+        "mySql": {
+          "id": "ZrB8w9cyZDVTR6qx",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    i.*,\n    '{{ $json.email }}' AS email_manager,\n    '{{ $json.name }}' AS name_manager,\n    (SELECT COUNT(*) FROM incidents WHERE company_id = {{ $json.company_id }} AND status = 'pending') AS total_incidents,\n    (SELECT COUNT(*) FROM incidents WHERE company_id = {{ $json.company_id }} AND status = 'pending' AND severity = 'critical') AS critical_count,\n    (SELECT COUNT(*) FROM incidents WHERE company_id = {{ $json.company_id }} AND status = 'pending' AND severity = 'high') AS high_count,\n    (SELECT COUNT(*) FROM incidents WHERE company_id = {{ $json.company_id }} AND status = 'pending' AND severity = 'medium') AS medium_count,\n    (SELECT COUNT(*) FROM incidents WHERE company_id = {{ $json.company_id }} AND status = 'pending' AND severity = 'low') AS low_count\nFROM `incidents` i \nWHERE i.company_id = {{ $json.company_id }} AND i.status = 'pending'\nORDER BY \n    CASE i.severity \n        WHEN 'critical' THEN 1 \n        WHEN 'high' THEN 2 \n        WHEN 'medium' THEN 3 \n        WHEN 'low' THEN 4 \n    END,\n    i.created_at ASC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -128,
+        64
+      ],
+      "id": "79f57610-3177-4147-a392-dabbc6d142c8",
+      "name": "Get incidents by company",
+      "credentials": {
+        "mySql": {
+          "id": "ZrB8w9cyZDVTR6qx",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.total_incidents }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        80,
+        64
+      ],
+      "id": "acc8d0ec-1834-4e77-9614-a41aabb1ec28",
+      "name": "Check if incidents exist"
+    },
+    {
+      "parameters": {
+        "jsCode": "// インシデントデータを処理し、テンプレートに適した構造を作成\nconst incidents = $input.all();\n\nif (incidents.length === 0) {\n    // インシデントなし\n    return {\n        json: {\n            total_incidents: 0,\n            critical_count: 0,\n            high_count: 0,\n            medium_count: 0,\n            low_count: 0,\n            incidents: [],\n            incident_rows: \"\",\n            email_manager: $json.email_manager,\n            name_manager: $json.name_manager\n        }\n    };\n}\n\n// インシデントあり - 最初のインシデントからデータを取得（すべて同じ統計を持つ）\nconst firstIncident = $input.first().json;\n\n// テーブル用のHTML行を作成\nconst rows = incidents.map(item => {\n  const incident = item.json;\n  const severity = incident.severity || \"unknown\";\n  \n  // 重要度の日本語翻訳\n  const severityMap = {\n    'critical': '重大',\n    'high': '高',\n    'medium': '中',\n    'low': '低'\n  };\n  \n  const severityText = severityMap[severity] || severity.toUpperCase();\n  \n  return `\n<tr style=\"${severity === 'critical' ? 'background-color: #fdf2f2;' : ''}\">\n    <td><strong>#${incident.id || ''}</strong></td>\n    <td>${incident.title || ''} ${severity === 'critical' ? '<span class=\"urgent-badge\">緊急</span>' : ''}</td>\n    <td>${incident.location || '未確定'}</td>\n    <td><span class=\"severity-${severity}\">${severityText}</span></td>\n    <td>${incident.occurred_at ? new Date(incident.occurred_at).toLocaleDateString('ja-JP') : ''}</td>\n    <td>${incident.created_at ? new Date(incident.created_at).toLocaleDateString('ja-JP') : ''}</td>\n</tr>`;\n}).join('');\n\nreturn {\n    json: {\n        total_incidents: firstIncident.total_incidents,\n        critical_count: firstIncident.critical_count,\n        high_count: firstIncident.high_count,\n        medium_count: firstIncident.medium_count,\n        low_count: firstIncident.low_count,\n        incidents: incidents,\n        incident_rows: rows,\n        email_manager: firstIncident.email_manager,\n        name_manager: firstIncident.name_manager\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        48
+      ],
+      "id": "7b06a338-47fa-4a57-9d7e-3fffd596cf84",
+      "name": "Process Incident Data"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        48
+      ],
+      "id": "93f84ad5-0ad4-4a9f-8832-fa17d5897b2c",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Send Email to User": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get incidents by company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user Managers": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get incidents by company": {
+      "main": [
+        [
+          {
+            "node": "Check if incidents exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if incidents exist": {
+      "main": [
+        [
+          {
+            "node": "Process Incident Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Incident Data": {
+      "main": [
+        [
+          {
+            "node": "Send Email to User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get user Managers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ea7e8093-77ac-4297-9fe2-830aca242f50",
+  "meta": {
+    "instanceId": "f6b1f53999d3f8081d67af8261fc35d4c2e58bb71fc44917b8c8c1d1daf1d36e"
+  },
+  "id": "JTi3twXSohzkATz3",
+  "tags": []
+}
